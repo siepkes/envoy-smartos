@@ -1,5 +1,7 @@
 #include "envoy/registry/registry.h"
 
+#include "envoy/config/accesslog/v2/file.pb.h"
+
 #include "common/access_log/access_log_impl.h"
 
 #include "extensions/access_loggers/file/config.h"
@@ -20,14 +22,14 @@ TEST(FileAccessLogConfigTest, ValidateFail) {
   NiceMock<Server::Configuration::MockFactoryContext> context;
 
   EXPECT_THROW(FileAccessLogFactory().createAccessLogInstance(
-                   envoy::config::filter::accesslog::v2::FileAccessLog(), nullptr, context),
+                   envoy::config::accesslog::v2::FileAccessLog(), nullptr, context),
                ProtoValidationException);
 }
 
 TEST(FileAccessLogConfigTest, ConfigureFromProto) {
   envoy::config::filter::accesslog::v2::AccessLog config;
 
-  envoy::config::filter::accesslog::v2::FileAccessLog fal_config;
+  envoy::config::accesslog::v2::FileAccessLog fal_config;
   fal_config.set_path("/dev/null");
 
   MessageUtil::jsonConvert(fal_config, *config.mutable_config());
@@ -58,7 +60,7 @@ TEST(FileAccessLogConfigTest, FileAccessLogTest) {
   ProtobufTypes::MessagePtr message = factory->createEmptyConfigProto();
   ASSERT_NE(nullptr, message);
 
-  envoy::config::filter::accesslog::v2::FileAccessLog file_access_log;
+  envoy::config::accesslog::v2::FileAccessLog file_access_log;
   file_access_log.set_path("/dev/null");
   file_access_log.set_format("%START_TIME%");
   MessageUtil::jsonConvert(file_access_log, *message);
