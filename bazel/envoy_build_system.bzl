@@ -197,7 +197,8 @@ def envoy_cc_binary(name,
         linkstatic = 1,
         visibility = visibility,
         malloc = tcmalloc_external_dep(repository),
-        stamp = 1,
+        # FIXME: Solaris ld doesn't support build-ld. Fix more elegantly.
+        stamp = 0,
         deps = deps,
     )
 
