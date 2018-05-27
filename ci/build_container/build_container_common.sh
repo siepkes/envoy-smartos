@@ -1,7 +1,8 @@
 #!/bin/bash -e
 
 # buildifier
-export GOPATH=/usr/lib/go
+#export GOPATH=/usr/lib/go
+export GOPATH=/root/go
 go get github.com/bazelbuild/buildifier/buildifier
 
 # GCC for everything.

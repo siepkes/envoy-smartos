@@ -2,7 +2,7 @@
 
 #ifdef __linux__
 #include <sys/syscall.h>
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__sun)
 #include <pthread.h>
 #endif
 
@@ -34,6 +34,8 @@ int32_t Thread::currentThreadId() {
   uint64_t tid;
   pthread_threadid_np(NULL, &tid);
   return static_cast<int32_t>(tid);
+#elif defined(__sun)
+  return static_cast<int32_t>(pthread_self());
 #else
 #error "Enable and test pthread id retrieval code for you arch in thread.cc"
 #endif

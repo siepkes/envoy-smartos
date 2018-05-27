@@ -1,3 +1,8 @@
+#ifdef __sun
+#include <sys/types.h>
+#include <netinet/in.h>
+#endif
+
 #include "common/network/address_impl.h"
 
 #include <arpa/inet.h>
@@ -30,15 +35,28 @@ Address::InstanceConstSharedPtr addressFromSockAddr(const sockaddr_storage& ss, 
     return std::make_shared<Address::Ipv4Instance>(sin);
   }
   case AF_INET6: {
-    RELEASE_ASSERT(ss_len == 0 || ss_len == sizeof(sockaddr_in6));
-    const struct sockaddr_in6* sin6 = reinterpret_cast<const struct sockaddr_in6*>(&ss);
-    ASSERT(AF_INET6 == sin6->sin6_family);
+     RELEASE_ASSERT(ss_len == 0 || ss_len == sizeof(sockaddr_in6));
+     const struct sockaddr_in6* sin6 = reinterpret_cast<const struct sockaddr_in6*>(&ss);
+     ASSERT(AF_INET6 == sin6->sin6_family);
+// GCC7 on Solaris treated us with the following error:
+// source/common/network/address_impl.cc:48:46: error: expected primary-expression before '.' token
+//                                  .sin_addr = {.s_addr = sin6->sin6_addr.s6_addr32[3]},
+//
+// FIXME: Support v6-mapped v4 addresses on Solaris.
+// We reverted to pre 3b3c0094d0988dabdffd96936420cf042e07f5c7 behavior for Solaris.
+#ifdef __sun
+    return std::make_shared<Address::Ipv6Instance>(*sin6, v6only);
+#else
     if (!v6only && IN6_IS_ADDR_V4MAPPED(&sin6->sin6_addr)) {
 #ifndef s6_addr32
 #ifdef __APPLE__
 #define s6_addr32 __u6_addr.__u6_addr32
 #endif
+#ifdef __sun
+#define s6_addr32 _S6_un._S6_u32
 #endif
+#endif
+
       struct sockaddr_in sin = {.sin_family = AF_INET,
                                 .sin_port = sin6->sin6_port,
                                 .sin_addr = {.s_addr = sin6->sin6_addr.s6_addr32[3]},
@@ -47,6 +65,7 @@ Address::InstanceConstSharedPtr addressFromSockAddr(const sockaddr_storage& ss, 
     } else {
       return std::make_shared<Address::Ipv6Instance>(*sin6, v6only);
     }
+#endif
   }
   case AF_UNIX: {
     const struct sockaddr_un* sun = reinterpret_cast<const struct sockaddr_un*>(&ss);

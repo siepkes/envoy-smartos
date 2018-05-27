@@ -56,8 +56,9 @@ def envoy_linkopts():
             # have the same behavior. When everyone is using an updated version
             # of Bazel, we can use linkopts to set the git SHA1 directly in the
             # --build-id and avoid doing the following.
-            '-Wl,--build-id=md5',
-            '-Wl,--hash-style=gnu',
+            # FIXME: The Solaris linker does not support these but GNU LD does.
+            #'-Wl,--build-id=md5',
+            #'-Wl,--hash-style=gnu',
             "-static-libstdc++",
             "-static-libgcc",
         ],

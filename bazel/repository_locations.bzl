@@ -1,15 +1,16 @@
 REPOSITORY_LOCATIONS = dict(
     boringssl = dict(
-        # Use commits from branch "chromium-stable-with-bazel"
-        commit = "9df0c47bc034d60d73d216cd0e090707b3fbea58",  # chromium-65.0.3325.146
-        remote = "https://boringssl.googlesource.com/boringssl",
+        # Use commits from branch "smartos-chromium-stable-with-bazel"
+        commit = "d0f5fb495b8a24525b0d4cb648328da535b8cfea",  # chromium-65.0.3325.146
+        remote = "https://github.com/siepkes/boringssl.git",
     ),
     com_google_absl = dict(
         commit = "787891a3882795cee0364e8a0f0dda315578d155",
         remote = "https://github.com/abseil/abseil-cpp",
     ),
     com_github_bombela_backward = dict(
-        commit = "44ae9609e860e3428cd057f7052e505b4819eb84",  # 2018-02-06
+        #commit = "44ae9609e860e3428cd057f7052e505b4819eb84",  # 2018-02-06
+        commit = "e1fc2c415f82d9f5e4387963263416b46afbfe54",
         remote = "https://github.com/bombela/backward-cpp",
     ),
     com_github_cyan4973_xxhash = dict(
@@ -35,8 +36,8 @@ REPOSITORY_LOCATIONS = dict(
         remote = "https://github.com/gcovr/gcovr",
     ),
     com_github_grpc_grpc = dict(
-        commit = "474c5950686e3962bd339c93d27e369bf64f568f", # v1.10.0
-        remote = "https://github.com/grpc/grpc.git",
+        commit = "2ae29896864da2220fef9a9437d219a13c89ff74", # v1.10.0 with Solaris support
+        remote = "https://github.com/siepkes/grpc.git",
     ),
     io_opentracing_cpp = dict(
         commit = "f3c1f42601d13504c68e2bc81c60604f0de055dd",
@@ -84,8 +85,8 @@ REPOSITORY_LOCATIONS = dict(
         remote = "https://github.com/grpc-ecosystem/grpc-httpjson-transcoding",
     ),
     io_bazel_rules_go = dict(
-        commit = "0.10.1",
-        remote = "https://github.com/bazelbuild/rules_go",
+        commit = "6741ba5ad28086daed3dd26a86fee85e3ca1d08c",
+        remote = "https://github.com/siepkes/rules_go.git",
     ),
     # I'd love to name this `com_github_google_subpar`, but something in the Subpar
     # code assumes its repository name is just `subpar`.
