@@ -1,7 +1,9 @@
 #include "server/hot_restart_impl.h"
 
 #include <signal.h>
+#ifndef __sun
 #include <sys/prctl.h>
+#endif
 #include <sys/types.h>
 #include <sys/un.h>
 
@@ -133,10 +135,14 @@ HotRestartImpl::HotRestartImpl(Options& options)
     parent_address_ = createDomainSocketAddress((options.restartEpoch() + -1));
   }
 
+// FIXME: Solaris doesn't support 'prctl'. Find a POSIX compliant way to do this. See also:
+// https://stackoverflow.com/questions/284325/how-to-make-child-process-die-after-parent-exits/284443
+#ifndef __sun
   // If our parent ever goes away just terminate us so that we don't have to rely on ops/launching
   // logic killing the entire process tree. We should never exist without our parent.
   int rc = prctl(PR_SET_PDEATHSIG, SIGTERM);
   RELEASE_ASSERT(rc != -1);
+#endif
 }
 
 Stats::RawStatData* HotRestartImpl::alloc(const std::string& name) {

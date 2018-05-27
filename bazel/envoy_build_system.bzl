@@ -48,7 +48,10 @@ def envoy_linkopts():
             "-pthread",
             "-lrt",
             "-ldl",
-            '-Wl,--hash-style=gnu',
+            # FIXME: The Solaris linker does not support these but GNU LD does.
+            #'-Wl,--hash-style=gnu',
+            "-static-libstdc++",
+            "-static-libgcc",
         ],
     }) + envoy_static_link_libstdcpp_linkopts() \
     + envoy_select_exported_symbols(["-Wl,-E"])

@@ -1,15 +1,16 @@
 REPOSITORY_LOCATIONS = dict(
     boringssl = dict(
-        # Use commits from branch "chromium-stable-with-bazel"
-        commit = "2a52ce799382c87cd3119f3b44fbbebf97061ab6",  # chromium-67.0.3396.62
-        remote = "https://github.com/google/boringssl",
+        # Use commits from branch "smartos-chromium-stable-with-bazel-2"
+        commit = "436c81949a683286ffcc780494def995debbb80c",  # chromium-67.0.3396.62
+        remote = "https://github.com/siepkes/boringssl",
     ),
     com_google_absl = dict(
-        commit = "92020a042c0cd46979db9f6f0cb32783dc07765e",  # 2018-06-08
-        remote = "https://github.com/abseil/abseil-cpp",
+        commit = "b91816cb251f04a1026b46b33bb2949cfbbe2c00",  # 2018-06-08
+        remote = "https://github.com/siepkes/abseil-cpp",
     ),
     com_github_bombela_backward = dict(
-        commit = "44ae9609e860e3428cd057f7052e505b4819eb84",  # 2018-02-06
+        #commit = "44ae9609e860e3428cd057f7052e505b4819eb84",  # 2018-02-06
+        commit = "e1fc2c415f82d9f5e4387963263416b46afbfe54",
         remote = "https://github.com/bombela/backward-cpp",
     ),
     com_github_circonus_labs_libcircllhist = dict(
@@ -43,8 +44,8 @@ REPOSITORY_LOCATIONS = dict(
         remote = "https://github.com/google/libprotobuf-mutator",
     ),
     com_github_grpc_grpc = dict(
-        commit = "bec3b5ada2c5e5d782dff0b7b5018df646b65cb0", # v1.12.0
-        remote = "https://github.com/grpc/grpc.git",
+        commit = "2a2e5309b543319bdf3f5240b336486be0ffa1bd", # v1.12.0 with Solaris support
+        remote = "https://github.com/siepkes/grpc.git",
     ),
     io_opentracing_cpp = dict(
         commit = "3b36b084a4d7fffc196eac83203cf24dfb8696b3", # v1.4.2
@@ -94,8 +95,8 @@ REPOSITORY_LOCATIONS = dict(
         remote = "https://github.com/grpc-ecosystem/grpc-httpjson-transcoding",
     ),
     io_bazel_rules_go = dict(
-        commit = "0.11.1",
-        remote = "https://github.com/bazelbuild/rules_go",
+        commit = "6741ba5ad28086daed3dd26a86fee85e3ca1d08c",
+        remote = "https://github.com/siepkes/rules_go.git",
     ),
     six_archive = dict(
         sha256 = "105f8d68616f8248e24bf0e9372ef04d3cc10104f1980f54d57b2ce73a5ad56a",

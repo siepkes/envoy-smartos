@@ -1,5 +1,9 @@
 #include "exe/signal_action.h"
 
+#ifdef __sun
+#include <sys/regset.h>
+#endif
+
 #include <signal.h>
 #include <sys/mman.h>
 
@@ -20,6 +24,8 @@ void SignalAction::sigHandler(int sig, siginfo_t* info, void* context) {
     error_pc = reinterpret_cast<void*>(ucontext->uc_mcontext->__ss.__rip);
 #elif defined(__powerpc__)
     error_pc = reinterpret_cast<void*>(ucontext->uc_mcontext.regs->nip);
+#elif defined(__sun)
+    error_pc = reinterpret_cast<void*>(ucontext->uc_mcontext.gregs[REG_PC]);
 #else
 #warning "Please enable and test PC retrieval code for your arch in signal_action.cc"
 // x86 Classic: reinterpret_cast<void*>(ucontext->uc_mcontext.gregs[REG_EIP]);
@@ -76,7 +82,7 @@ void SignalAction::removeSigHandlers() {
   }
 }
 
-#if defined(__APPLE__) && !defined(MAP_STACK)
+#if (defined(__APPLE__) || defined(__sun)) && !defined(MAP_STACK)
 #define MAP_STACK (0)
 #endif
 
