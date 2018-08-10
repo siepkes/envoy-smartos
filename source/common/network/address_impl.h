@@ -1,5 +1,7 @@
 #pragma once
 
+// https://www.osdyson.org/issues/60
+#include <netinet/in.h>
 #include <netinet/ip.h>
 #include <sys/socket.h>
 #include <sys/types.h>

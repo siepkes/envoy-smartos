@@ -8,7 +8,8 @@ def envoy_copts(repository, test = False):
     return [
         "-Wall",
         "-Wextra",
-        "-Werror",
+# Doesn't work on Solaris.
+#        "-Werror",
         "-Wnon-virtual-dtor",
         "-Woverloaded-virtual",
         "-Wold-style-cast",
@@ -71,7 +72,8 @@ def _envoy_stamped_linkopts():
 
     # Note: assumes GNU GCC (or compatible) handling of `--build-id` flag.
     "//conditions:default": [
-        "-Wl,@$(location @envoy//bazel:gnu_build_id.ldscript)",
+    # FIXME: Solaris ld doesn't support build-ld. Fix more elegantly.
+    #    "-Wl,@$(location @envoy//bazel:gnu_build_id.ldscript)",
     ],
   })
 
@@ -197,8 +199,7 @@ def envoy_cc_binary(name,
         linkstatic = 1,
         visibility = visibility,
         malloc = tcmalloc_external_dep(repository),
-        # FIXME: Solaris ld doesn't support build-ld. Fix more elegantly.
-        stamp = 0,
+        stamp = 1,
         deps = deps,
     )
 

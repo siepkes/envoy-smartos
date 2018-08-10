@@ -7,6 +7,9 @@ git clone https://github.com/google/benchmark.git
 (cd benchmark; git reset --hard "$COMMIT")
 mkdir build
 
+# Needed for math functions.
+export LD_FLAGS="-lm"
+
 cd build
 cmake -G "Unix Makefiles" ../benchmark \
   -DCMAKE_BUILD_TYPE=RELEASE \

@@ -5,13 +5,13 @@ REPOSITORY_LOCATIONS = dict(
         remote = "https://github.com/siepkes/boringssl",
     ),
     com_google_absl = dict(
-        commit = "b91816cb251f04a1026b46b33bb2949cfbbe2c00",  # 2018-06-08
+        commit = "59a3220c99098fe7f57c18a6c4f1f0c46389b64e",  # 2018-06-08
         remote = "https://github.com/siepkes/abseil-cpp",
     ),
     com_github_bombela_backward = dict(
         #commit = "44ae9609e860e3428cd057f7052e505b4819eb84",  # 2018-02-06
-        commit = "e1fc2c415f82d9f5e4387963263416b46afbfe54",
-        remote = "https://github.com/bombela/backward-cpp",
+        commit = "e0004afbc1a933c03f002174a52544862f32df60",
+        remote = "https://github.com/siepkes/backward-cpp",
     ),
     com_github_circonus_labs_libcircllhist = dict(
         commit = "476687ac9cc636fc92ac3070246d757ae6854547",  # 2018-05-08
