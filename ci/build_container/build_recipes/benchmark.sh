@@ -4,7 +4,10 @@ set -e
 
 # use commit where cmake 3.6 feature removed. Unblocks Ubuntu 16.xx or below builds
 # TODO (moderation) change back to tarball method on next benchmark release
-export COMMIT="505be96ab23056580a3a2315abba048f4428b04e"
+#export COMMIT="505be96ab23056580a3a2315abba048f4428b04e"
+# Need a recent commit one which does not make ambigious calls to math
+# library functions in 'math.h'.
+export COMMIT="1f3cba06e4f50bc35aa24941b58ae41fc2ada40e"
 
 git clone https://github.com/google/benchmark.git
 (cd benchmark; git reset --hard "$COMMIT")

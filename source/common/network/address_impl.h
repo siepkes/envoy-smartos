@@ -1,5 +1,7 @@
 #pragma once
 
+// 'netinet/ip.h' Should include 'netinet/in.h'. See: https://www.osdyson.org/issues/60
+#include <netinet/in.h>
 #include <netinet/ip.h>
 #include <sys/socket.h>
 #include <sys/types.h>

@@ -2,13 +2,11 @@
 
 set -e
 
-VERSION=1.2.11
-SHA256=629380c90a77b964d896ed37163f5c3a34f6e6d897311f1df2a7016355c45eff
-
-curl https://github.com/madler/zlib/archive/v"$VERSION".tar.gz -sLo zlib-"$VERSION".tar.gz \
-  && echo "$SHA256 " zlib-"$VERSION".tar.gz | shasum -a 256 --check
-tar xf zlib-"$VERSION".tar.gz
-cd zlib-"$VERSION"
+# We need a fix to prevent the '--version-script' flag from being
+# set on the linker in CMakeLists.txt.
+git clone https://github.com/siepkes/zlib.git
+cd zlib
+git checkout 28aa7820d3875973a45027c06682df756e5566b7
 
 mkdir build
 cd build

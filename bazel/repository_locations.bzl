@@ -1,8 +1,8 @@
 REPOSITORY_LOCATIONS = dict(
     boringssl = dict(
-        # Use commits from branch "chromium-stable-with-bazel"
-        commit = "ab36a84b91b3116bacc85973995504818748d8a9",  # chromium-69.0.3497.81
-        remote = "https://github.com/google/boringssl",
+        # Use commits from branch "smartos-69.0.3497.81" (chromium-stable-with-bazel)
+        commit = "747f941813148c4116475dfe02cfec0bee7fe70c",  # chromium-69.0.3497.81
+        remote = "https://github.com/siepkes/boringssl",
     ),
     com_google_absl = dict(
         commit = "92e07e5590752d6b8e67f7f2f86c6286561e8cea",  # 2018-08-01
@@ -52,9 +52,8 @@ REPOSITORY_LOCATIONS = dict(
         remote = "https://github.com/google/libprotobuf-mutator",
     ),
     com_github_grpc_grpc = dict(
-        sha256 = "013cc34f3c51c0f87e059a12ea203087a7a15dca2e453295345e1d02e2b9634b",
-        strip_prefix = "grpc-1.15.0",
-        urls = ["https://github.com/grpc/grpc/archive/v1.15.0.tar.gz"],
+        commit = "6f97298cc8c61e555ab69b38df17e2389d43374d", 
+        remote = "https://github.com/siepkes/grpc.git",
     ),
     com_github_nanopb_nanopb = dict(
         # From: https://github.com/grpc/grpc/blob/v1.14.0/bazel/grpc_deps.bzl#L123
@@ -137,10 +136,14 @@ REPOSITORY_LOCATIONS = dict(
         remote = "https://github.com/grpc-ecosystem/grpc-httpjson-transcoding",
     ),
     io_bazel_rules_go = dict(
-        sha256 = "5a89e9c1fe89d45c4a45132fae94bf130842ce3c77e3a735a68f6991d4e00a25",
-        strip_prefix = "rules_go-0.11.2",
-        urls = ["https://github.com/bazelbuild/rules_go/archive/0.11.2.tar.gz"],
+        commit = "6741ba5ad28086daed3dd26a86fee85e3ca1d08c",
+        remote = "https://github.com/siepkes/rules_go.git",
     ),
+# TODO: Upstream is at 0.11.2 however for some reason our bump doesn't work so we stayed at 0.11.1.
+#    io_bazel_rules_go = dict(
+#        commit = "6917ed9d64fa26af2420dc7e8e2a24d1554006ee", # 0.11.2 with SmartOS support.
+#        remote = "https://github.com/siepkes/rules_go.git",
+#    ),
     six_archive = dict(
         sha256 = "105f8d68616f8248e24bf0e9372ef04d3cc10104f1980f54d57b2ce73a5ad56a",
         strip_prefix = "",

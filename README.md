@@ -1,3 +1,120 @@
+# Envoy SmartOS / Illumos / Solaris port
+
+**(Scroll down for original Envoy readme.md)**
+
+This repo contains a SmartOS port for Envoy. It will probably also work on Solaris though it will probably require modifications since we assume the use of pkgsrc.
+
+This build requires a SmartOS / Illumos / Solaris port of Bazel. Currently I only put the patch for that in a GitHub Gist: https://gist.github.com/siepkes/0d144125974b2a84a92433e0282804b2 . My intention being to properly upstream the thing but that takes some work... Feel free to reach out to me if you encounter any issues.
+
+## Building Envoy on SmartOS
+
+Create a SmartOS container (`joyent` brand if your on Joyent's public cloud / Triton). Steps below are performed on a container running the `pkgbuild` image version `17.4.0`.
+
+Install required build packages. Envoy makes use of modern C++ so will only work with a modern C++ compiler.
+
+```
+$ pkgin install ninja-build gcc7 git-base zip unzip openjdk8 libtool cmake automake ninja-build autoconf gmake
+```
+
+Configure the build environment:
+```
+# Needed to prevent a CPU detection algorithm from going awry.
+$ export NUM_CPUS=2
+
+# Needed otherwise the io_opentrace build fails complaining it can't find the compiler.
+$ export PATH=$PATH:/opt/local/gcc7/bin
+
+# Needed to make CMake / Ninja use the correct compiler (ie. the build scripts under 'ci/build_container/build_recipes').
+$ export CC=/opt/local/gcc7/bin/gcc
+$ export CXX=/opt/local/gcc7/bin/g++
+```
+
+Build Envoy:
+```
+$ cd /root/envoy/
+$ bazel build -c opt --jobs=4 --define hot_restart=disabled --define signal_trace=disabled --package_path %workspace%:/root/envoy/ //source/exe:envoy-static
+```
+
+This will result in a statically linked binary of Envoy. The binary will include debug symbols which you can strip to bring down the size of the binary substantially:
+
+```
+$ strip bazel-bin/source/exe/envoy-static
+```
+
+## Known issues
+
+Below is a list of known issues of this port. These are mostly open issues because they represent functionality I didn't need right away and stood in the way of doing a sucessful build. I'm obviously open to any PR / help anyone can offer though!
+
+### Final binary requires GCC7 package
+
+Due to the way the linking is currently configured the final Envoy binary requires the `gcc7` package to be installed in the container:
+
+```
+$ ldd bazel-bin/source/exe/envoy-static
+        librt.so.1 =>    /lib/64/librt.so.1
+        libdl.so.1 =>    /lib/64/libdl.so.1
+        libpthread.so.1 =>       /lib/64/libpthread.so.1
+        libm.so.2 =>     /lib/64/libm.so.2
+        libstdc++.so.6 =>        /opt/local/gcc7//lib/amd64/libstdc++.so.6
+        libxnet.so.1 =>  /lib/64/libxnet.so.1
+        libsocket.so.1 =>        /lib/64/libsocket.so.1
+        libnsl.so.1 =>   /lib/64/libnsl.so.1
+        libgcc_s.so.1 =>         /opt/local/gcc7//lib/amd64/libgcc_s.so.1
+        libc.so.1 =>     /lib/64/libc.so.1
+        libmp.so.2 =>    /lib/64/libmp.so.2
+        libmd.so.1 =>    /lib/64/libmd.so.1
+```
+
+### Get entire test suite to run
+
+Headline covers it.
+
+### IPv6 to IPv4 disabled
+
+Support for IPv6 to IPv4 was disabled due to compilation errors. See modifications to `source/common/network/address_impl.cc` for more info.
+
+### Hot restart disabled
+
+Currently we pass `--define hot_restart=disabled` when building  to disable Hot restart (ie. restart Envoy without client connections being closed). Hot restart is disabled because it didn't work without modifications and I didn't have a need for it. 
+
+### Backtrace disabled
+
+Due to issues when building 1.8 (didn't encounter these with 1.7) backtrace is currently disabled with the `--define signal_trace=disabled` flag. 
+
+We run in to the following error when building:
+
+```
+DEBUG: /root/envoy/bazel/repositories.bzl:121:5: External dep build exited with return code: 0
+INFO: Analysed target //source/exe:envoy-static (1 packages loaded).
+INFO: Found 1 target...
+INFO: From Compiling external/com_google_absl/absl/time/internal/cctz/src/civil_time_detail.cc:
+In file included from external/com_google_absl/absl/time/internal/cctz/src/civil_time_detail.cc:15:0:
+external/com_google_absl/absl/time/internal/cctz/include/cctz/civil_time_detail.h: In function 'int absl::time_internal::cctz::detail::impl::days_per_month(absl::time_internal::cctz::year_t, absl::time_internal::cctz::detail::month_t)':
+external/com_google_absl/absl/time/internal/cctz/include/cctz/civil_time_detail.h:101:28: warning: array subscript has type 'char' [-Wchar-subscripts]
+   return k_days_per_month[m] + (m == 2 && is_leap_year(y));
+                            ^
+ERROR: /root/envoy/source/exe/BUILD:82:1: C++ compilation of rule '//source/exe:sigaction_lib' failed (Exit 1)
+In file included from bazel-out/solaris-opt/bin/source/server/_virtual_includes/backtrace_lib/server/backtrace.h:3:0,
+                 from bazel-out/solaris-opt/bin/source/exe/_virtual_includes/sigaction_lib/exe/signal_action.h:10,
+                 from source/exe/signal_action.cc:1:
+external/com_github_bombela_backward/backward.hpp: In member function 'std::size_t backward::StackTraceImpl<backward::system_tag::unknown_tag>::load_here(std::size_t)':
+external/com_github_bombela_backward/backward.hpp:795:22: error: 'backtrace' was not declared in this scope
+   size_t trace_cnt = backtrace(&_stacktrace[0], _stacktrace.size());
+                      ^~~~~~~~~
+external/com_github_bombela_backward/backward.hpp:795:22: note: suggested alternative: '_stacktrace'
+   size_t trace_cnt = backtrace(&_stacktrace[0], _stacktrace.size());
+                      ^~~~~~~~~
+                      _stacktrace
+Target //source/exe:envoy-static failed to build
+Use --verbose_failures to see the command lines of failed build steps.
+```
+
+### Linker spits out massive number of warnings
+
+On completion the linker spits out a massive number of warnings (most about relocations). So massive that it takes a couple of minutes for the terminal to catch up. As far as I can tell this is not a problem for the final binary. However this is something that should obviously be addressed at some point.
+
+# Original Envoy Readme
+
 ![Envoy Logo](https://github.com/envoyproxy/artwork/blob/master/PNG/Envoy_Logo_Final_PANTONE.png)
 
 [C++ L7 proxy and communication bus](https://www.envoyproxy.io/)

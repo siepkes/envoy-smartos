@@ -2,13 +2,15 @@
 
 set -e
 
-VERSION=2.1.8-stable
-SHA256=316ddb401745ac5d222d7c529ef1eada12f58f6376a66c1118eee803cb70f83d
+# Since we are bumping into this issue: https://github.com/libevent/libevent/issues/615
+# We need this patch: https://github.com/libevent/libevent/commit/266f43af7798befa3d27bfabaa9ae699259c3924
+# Now that Envoy uses CMake we've also bumped into this: https://github.com/libevent/libevent/issues/463
+# There is no stable release (yet) with this fix.
+git clone https://github.com/siepkes/libevent.git libevent
+cd libevent
+git checkout patches-2.1
 
-curl https://github.com/libevent/libevent/archive/release-"$VERSION".tar.gz -sLo libevent-release-"$VERSION".tar.gz \
-  && echo "$SHA256 " libevent-release-"$VERSION".tar.gz | shasum -a 256 --check
-tar xf libevent-release-"$VERSION".tar.gz
-cd libevent-release-"$VERSION"
+./autogen.sh
 
 mkdir build
 cd build
@@ -24,10 +26,13 @@ if [[ "${OS}" == "Windows_NT" ]]; then
   build_type=Debug
 fi
 
+# Samples don't link on Illumos due to https://github.com/libevent/libevent/issues/615
 cmake -G "Ninja" \
+  -DEVENT__LIBRARY_TYPE:STRING=STATIC \
   -DCMAKE_INSTALL_PREFIX="$THIRDPARTY_BUILD" \
   -DEVENT__DISABLE_OPENSSL:BOOL=on \
   -DEVENT__DISABLE_REGRESS:BOOL=on \
+  -DEVENT__DISABLE_SAMPLES:BOOL=on \
   -DCMAKE_BUILD_TYPE="$build_type" \
   ..
 ninja
