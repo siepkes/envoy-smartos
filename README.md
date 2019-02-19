@@ -4,7 +4,7 @@
 
 This repo contains a SmartOS port for Envoy. It will probably also work on Solaris though it will probably require modifications since we assume the use of pkgsrc.
 
-This build requires a SmartOS / Illumos / Solaris port of Bazel. Currently I only put the patch for that in a GitHub Gist: https://gist.github.com/siepkes/0d144125974b2a84a92433e0282804b2 . My intention being to properly upstream the thing but that takes some work... Feel free to reach out to me if you encounter any issues.
+To build this Envoy port you need Bazel. This requires a SmartOS / Illumos / Solaris port of Bazel since Bazel does not natively support these platforms. See the [bazel-smartos](https://github.com/siepkes/bazel-smartos) repo for a SmartOS port. My intention being to properly upstream the thing but that takes some work... Feel free to reach out to me if you encounter any issues.
 
 ## Building Envoy on SmartOS
 
