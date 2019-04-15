@@ -5,10 +5,10 @@ REPOSITORY_LOCATIONS = dict(
     ),
     boringssl = dict(
         # Use commits from branch "chromium-stable-with-bazel"
-        sha256 = "448773376d063b1e9a19e4fd41002d1a31a968a13be20b3b66ecd4aab9cf14a8",
-        strip_prefix = "boringssl-e534d74f5732e1aeebd514f05271d089c530c2f9",
-        # chromium-75.0.3770.80
-        urls = ["https://github.com/google/boringssl/archive/e534d74f5732e1aeebd514f05271d089c530c2f9.tar.gz"],
+        sha256 = "c69d255e7b31496f80e6645a09a954b553834a2f4b8eca71b0491a55ba8a982f",
+        strip_prefix = "boringssl-4aa7f35ca99bdf4b6ef9726bd47361ed265570cc",
+        # Use commits from branch "smartos-75.0.3770.80" (chromium-stable-with-bazel)
+        urls = ["https://github.com/siepkes/boringssl/archive/4aa7f35ca99bdf4b6ef9726bd47361ed265570cc.tar.gz"],
     ),
     boringssl_fips = dict(
         sha256 = "b12ad676ee533824f698741bd127f6fbc82c46344398a6d78d25e62c6c418c73",
@@ -86,10 +86,10 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/gperftools/gperftools/archive/fc00474ddc21fff618fc3f009b46590e241e425e.tar.gz"],
     ),
     com_github_grpc_grpc = dict(
-        sha256 = "bcb01ac7029a7fb5219ad2cbbc4f0a2df3ef32db42e236ce7814597f4b04b541",
-        strip_prefix = "grpc-79a8b5289e3122d2cea2da3be7151d37313d6f46",
+        sha256 = "334d52799900269260fc2987b1a3b44f8034f97259d60711931f4d33734c00e2",
+        strip_prefix = "grpc-b22ba63929d2dba190f47026f2aecc10944c575f",
         # Commit from 2019-05-30
-        urls = ["https://github.com/grpc/grpc/archive/79a8b5289e3122d2cea2da3be7151d37313d6f46.tar.gz"],
+        urls = ["https://github.com/siepkes/grpc/archive/b22ba63929d2dba190f47026f2aecc10944c575f.tar.gz"],
     ),
     com_github_luajit_luajit = dict(
         sha256 = "409f7fe570d3c16558e594421c47bdd130238323c9d6fd6c83dedd2aaeb082a8",
@@ -117,9 +117,9 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/lightstep/lightstep-tracer-cpp/archive/v0.8.0.tar.gz"],
     ),
     com_github_datadog_dd_opentracing_cpp = dict(
-        sha256 = "a3d1c03e7af570fa64c01df259e6e9bb78637a6bd9c65c6bf7e8703e466dc22f",
-        strip_prefix = "dd-opentracing-cpp-0.4.2",
-        urls = ["https://github.com/DataDog/dd-opentracing-cpp/archive/v0.4.2.tar.gz"],
+        sha256 = "d22950f6a12b2980c3edd4fd71e5de1c2faabf916029e658d5f7b3392fc7af4e",
+        strip_prefix = "dd-opentracing-cpp-0f94c322232f99a49158b9cf9e388275d0baf5ca",
+        urls = ["https://github.com/siepkes/dd-opentracing-cpp/archive/0f94c322232f99a49158b9cf9e388275d0baf5ca.tar.gz"],
     ),
     com_github_google_benchmark = dict(
         sha256 = "3c6a165b6ecc948967a1ead710d4a181d7b0fbcaa183ef7ea84604994966221a",
@@ -216,8 +216,9 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/grpc-ecosystem/grpc-httpjson-transcoding/archive/64d6ac985360b624d8e95105701b64a3814794cd.tar.gz"],
     ),
     io_bazel_rules_go = dict(
-        sha256 = "a82a352bffae6bee4e95f68a8d80a70e87f42c4741e6a448bec11998fcc82329",
-        urls = ["https://github.com/bazelbuild/rules_go/releases/download/0.18.5/rules_go-0.18.5.tar.gz"],
+        sha256 = "6ede5b27a5e9280fe1e6b220007d8dc75c83e6c0b2d48f21dff5c45b",
+        strip_prefix = "rules_go-2223cccf0f0bfd65cfd000ecf5827521dd4cfb07",
+        urls = ["https://github.com/siepkes/rules_go/archive/2223cccf0f0bfd65cfd000ecf5827521dd4cfb07.tar.gz"],
     ),
     rules_foreign_cc = dict(
         sha256 = "980c1b74f5c18ea099889b0fb0479ee34b8a02845d3d302ecb16b15d73d624c8",

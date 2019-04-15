@@ -373,6 +373,7 @@ TEST(AddressFromSockAddrDeathTest, IPv6) {
 
   EXPECT_EQ("[1:23::ef]:32000", addressFromSockAddr(ss, sizeof(sockaddr_in6))->asString());
 
+#ifndef __sun
   // Test that IPv4-mapped IPv6 address is returned as an Ipv4Instance when 'v6only' parameter is
   // 'false', but not otherwise.
   EXPECT_EQ(1, inet_pton(AF_INET6, "::ffff:192.0.2.128", &sin6.sin6_addr));
@@ -381,6 +382,7 @@ TEST(AddressFromSockAddrDeathTest, IPv6) {
   EXPECT_EQ(IpVersion::v6, addressFromSockAddr(ss, sizeof(sockaddr_in6), true)->ip()->version());
   EXPECT_EQ("[::ffff:192.0.2.128]:32000",
             addressFromSockAddr(ss, sizeof(sockaddr_in6), true)->asString());
+#endif
 }
 
 TEST(AddressFromSockAddrDeathTest, Pipe) {
