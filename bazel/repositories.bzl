@@ -13,7 +13,7 @@ load("@bazel_tools//tools/cpp:lib_cc_configure.bzl", "get_env_var")
 PPC_SKIP_TARGETS = {"luajit": "envoy.filters.http.lua"}
 
 # go version for rules_go
-GO_VERSION = "1.10.4"
+GO_VERSION = "1.10.2"
 
 # Make all contents of an external repository accessible under a filegroup.  Used for external HTTP
 # archives, e.g. cares.
@@ -354,6 +354,8 @@ def _com_github_madler_zlib():
     http_archive(
         name = "com_github_madler_zlib",
         build_file_content = BUILD_ALL_CONTENT,
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel/foreign_cc:zlib.patch"],
         **location
     )
     native.bind(
@@ -643,6 +645,8 @@ def _com_github_gperftools_gperftools():
         name = "com_github_gperftools_gperftools",
         build_file_content = BUILD_ALL_CONTENT,
         patch_cmds = ["./autogen.sh"],
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel/foreign_cc:gperftools.patch"],
         **location
     )
 

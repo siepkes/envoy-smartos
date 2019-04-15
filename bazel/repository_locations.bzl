@@ -4,11 +4,10 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/bazelbuild/bazel-gazelle/releases/download/0.17.0/bazel-gazelle-0.17.0.tar.gz"],
     ),
     boringssl = dict(
-        # Use commits from branch "chromium-stable-with-bazel"
-        sha256 = "e11d2d62cd6c4e1b2e126500e1436a678574300f33f27974f2c7ef271be42727",
-        strip_prefix = "boringssl-debed9a4d8de5e282f672ffcd7e4a48a201ea78c",
-        # chromium-73.0.3683.75
-        urls = ["https://github.com/google/boringssl/archive/debed9a4d8de5e282f672ffcd7e4a48a201ea78c.tar.gz"],
+        sha256 = "8aeb983590cdd78d131a38769270007fb5a6b750f395b425fa1de0b4e25baed9",
+        strip_prefix = "boringssl-30bb22ca735653c4adf408d0dba6f4ebd9f7ba1c",
+        # Use commits from branch "smartos-73.0.3683.75" (chromium-stable-with-bazel)
+        urls = ["https://github.com/siepkes/boringssl/archive/30bb22ca735653c4adf408d0dba6f4ebd9f7ba1c.tar.gz"], 
     ),
     boringssl_fips = dict(
         sha256 = "b12ad676ee533824f698741bd127f6fbc82c46344398a6d78d25e62c6c418c73",
@@ -82,9 +81,9 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/gperftools/gperftools/archive/fc00474ddc21fff618fc3f009b46590e241e425e.tar.gz"],
     ),
     com_github_grpc_grpc = dict(
-        sha256 = "a5342629fe1b689eceb3be4d4f167b04c70a84b9d61cf8b555e968bc500bdb5a",
-        strip_prefix = "grpc-1.16.1",
-        urls = ["https://github.com/grpc/grpc/archive/v1.16.1.tar.gz"],
+        sha256 = "920f124a07ae25a37fa543acfda1a7fe6b4b13d5f007e765da04e25e65d6526d",
+        strip_prefix = "grpc-94ee0b70781a43b566cd868906ad7f8348cad994",
+        urls = ["https://github.com/siepkes/grpc/archive/94ee0b70781a43b566cd868906ad7f8348cad994.tar.gz"],
     ),
     com_github_luajit_luajit = dict(
         sha256 = "409f7fe570d3c16558e594421c47bdd130238323c9d6fd6c83dedd2aaeb082a8",
@@ -118,15 +117,17 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/googleapis/googleapis/archive/d6f78d948c53f3b400bb46996eb3084359914f9b.tar.gz"],
     ),
     com_github_datadog_dd_opentracing_cpp = dict(
-        sha256 = "a3d1c03e7af570fa64c01df259e6e9bb78637a6bd9c65c6bf7e8703e466dc22f",
-        strip_prefix = "dd-opentracing-cpp-0.4.2",
-        urls = ["https://github.com/DataDog/dd-opentracing-cpp/archive/v0.4.2.tar.gz"],
+        sha256 = "d22950f6a12b2980c3edd4fd71e5de1c2faabf916029e658d5f7b3392fc7af4e",
+        strip_prefix = "dd-opentracing-cpp-0f94c322232f99a49158b9cf9e388275d0baf5ca",
+        urls = ["https://github.com/siepkes/dd-opentracing-cpp/archive/0f94c322232f99a49158b9cf9e388275d0baf5ca.tar.gz"],
     ),
     com_github_google_benchmark = dict(
         # TODO (moderation) change back to tarball method on next benchmark release
-        sha256 = "0de43b6eaddd356f1d6cd164f73f37faf2f6c96fd684e1f7ea543ce49c1d144e",
-        strip_prefix = "benchmark-505be96ab23056580a3a2315abba048f4428b04e",
-        urls = ["https://github.com/google/benchmark/archive/505be96ab23056580a3a2315abba048f4428b04e.tar.gz"],
+        sha256 = "b2ba0cd793d82e97d39f4cfa4a0645bc52f7a5b54b806c1c0d010c115cd5ca84",
+        strip_prefix = "benchmark-1f3cba06e4f50bc35aa24941b58ae41fc2ada40e",
+        # Need a more recent version for Solaris which does not make ambigious calls to math
+        # library functions in 'math.h'.
+        urls = ["https://github.com/google/benchmark/archive/1f3cba06e4f50bc35aa24941b58ae41fc2ada40e.tar.gz"],
     ),
     com_github_libevent_libevent = dict(
         sha256 = "53d4bb49b837944893b7caf9ae8eb43e94690ee5babea6469cc4a928722f99b1",
@@ -215,8 +216,9 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/golang/protobuf/archive/v1.3.0.tar.gz"],
     ),
     io_bazel_rules_go = dict(
-        sha256 = "6776d68ebb897625dead17ae510eac3d5f6342367327875210df44dbe2aeeb19",
-        urls = ["https://github.com/bazelbuild/rules_go/releases/download/0.17.1/rules_go-0.17.1.tar.gz"],
+        sha256 = "b395a6d44cf32136eadaabaf1d5043e3fcddada95e09b032f53d9301cdfe7b82",
+        strip_prefix = "rules_go-6483698f93b4ad1c7ad1016dcfc6f3985062f9ba",
+        urls = ["https://github.com/siepkes/rules_go/archive/6483698f93b4ad1c7ad1016dcfc6f3985062f9ba.tar.gz"],
     ),
     rules_foreign_cc = dict(
         sha256 = "e1b67e1fda647c7713baac11752573bfd4c2d45ef09afb4d4de9eb9bd4e5ac76",

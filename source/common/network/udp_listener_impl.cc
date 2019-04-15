@@ -14,6 +14,10 @@
 
 #include "event2/listener.h"
 
+#ifdef __sun
+#define s6_addr32 _S6_un._S6_u32
+#endif
+
 namespace Envoy {
 namespace Network {
 
@@ -126,6 +130,7 @@ void UdpListenerImpl::handleReadCallback() {
       const struct sockaddr_in6* sin6 = reinterpret_cast<const struct sockaddr_in6*>(&addr);
       ASSERT(AF_INET6 == sin6->sin6_family);
       if (IN6_IS_ADDR_V4MAPPED(&sin6->sin6_addr)) {
+
 #if defined(__APPLE__)
         struct sockaddr_in sin = {
             {}, AF_INET, sin6->sin6_port, {sin6->sin6_addr.__u6_addr.__u6_addr32[3]}, {}};

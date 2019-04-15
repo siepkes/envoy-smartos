@@ -32,12 +32,14 @@ def envoy_copts(repository, test = False):
     posix_options = [
         "-Wall",
         "-Wextra",
-        "-Werror",
+        # Doesn't work on Solaris.
+        #"-Werror",
         "-Wnon-virtual-dtor",
         "-Woverloaded-virtual",
         "-Wold-style-cast",
         "-Wvla",
         "-std=c++14",
+        "-static",
     ]
 
     msvc_options = [
@@ -111,7 +113,8 @@ def envoy_linkopts():
                    "-pthread",
                    "-lrt",
                    "-ldl",
-                   "-Wl,--hash-style=gnu",
+                   # FIXME: The Solaris linker does not support these but GNU LD does.
+                   #'-Wl,--hash-style=gnu',
                ],
            }) + envoy_static_link_libstdcpp_linkopts() + \
            envoy_select_exported_symbols(["-Wl,-E"])
@@ -133,7 +136,8 @@ def _envoy_stamped_linkopts():
 
         # Note: assumes GNU GCC (or compatible) handling of `--build-id` flag.
         "//conditions:default": [
-            "-Wl,@$(location @envoy//bazel:gnu_build_id.ldscript)",
+            # TODO: Solaris ld doesn't support build-ld. Fix more elegantly.
+            # "-Wl,@$(location @envoy//bazel:gnu_build_id.ldscript)",
         ],
     })
 
@@ -370,7 +374,8 @@ def envoy_cc_binary(
         linkstatic = 1,
         visibility = visibility,
         malloc = tcmalloc_external_dep(repository),
-        stamp = 1,
+        # FIXME: Solaris ld doesn't support build-ld. Fix more elegantly.
+        stamp = 0,
         deps = deps,
     )
 

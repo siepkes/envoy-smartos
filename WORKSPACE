@@ -19,4 +19,7 @@ load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_depe
 
 go_rules_dependencies()
 
-go_register_toolchains(go_version = GO_VERSION)
+# Using 'host' makes Bazel use the go installation on our host. This
+# is needed because the 'io_bazel_rules_go' tries to download a GO 
+# installation. However it can't download one for Illumos / Solaris.
+go_register_toolchains(go_version = "host")
