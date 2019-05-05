@@ -12,6 +12,11 @@ To build this Envoy port you need Bazel. This requires a SmartOS / Illumos / Sol
 
 Envoy uses libevent which uses event ports on Illumos (the native non-blocking IO implementation on Illumos). For some reason when using event ports libevent starts making a massive number of syscalls (as many as the CPU limits allow). Therefor we disable the event ports implementation in libevent for now.
 
+```
+$ export EVENT_NOEVPORT=yes
+$ ./envoy-static --disable-hot-restart -c ./config.yaml
+```
+
 ## Building Envoy on SmartOS
 
 Create a SmartOS container (`joyent` brand if your on Joyent's public cloud / Triton). Steps below are performed on a container running the `pkgbuild` image version `17.4.0`.
@@ -32,18 +37,50 @@ $ git clone https://github.com/siepkes/envoy-smartos.git
 Build Envoy:
 ```
 $ cd envoy-smartos
-$ bazel build -c opt --jobs=4 --define hot_restart=disabled --define signal_trace=disabled --package_path %workspace%:/root/envoy/ //source/exe:envoy-static
+$ bazel --bazelrc=/dev/null build -c dbg --jobs=4 --define hot_restart=disabled --package_path %workspace%:/root/envoy/ //source/exe:envoy-static
 ```
 
-This will result in a statically linked binary of Envoy. The binary will include debug symbols which you can strip to bring down the size of the binary substantially (or you might want to keep them if you want to perform debugging):
+WARNING: As you can see we are building with the debug profile (dbg). Building with the optimized profile (opt) leads to segmentation faults when running Envoy.
+
+This will result in a statically linked binary of Envoy in `./bazel-bin/source/exe/envoy-static`. 
+
+The binary will include debug symbols which you can strip to bring down the size of the binary substantially. Beware that this will make the backtrace library unusable (ie. stacktrace become hard to read):
 
 ```
-$ strip bazel-bin/source/exe/envoy-static
+$ strip --strip-debug ./bazel-bin/source/exe/envoy-static
 ```
 
 ## Known issues
 
 Below is a list of known issues of this port. These are mostly open issues because they represent functionality I didn't need right away and stood in the way of doing a sucessful build. I'm obviously open to any PR / help anyone can offer though!
+
+### Optimized builds segfault
+
+```
+# mdb ./envoy-static /var/cores/envoy-static.envoy-build-1.669423.1556867988.core
+Loading modules: [ libc.so.1 ld.so.1 ]
+> ::stack
+_ZNKSt10_HashtableINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt4pairIKS5_KZNK5Envoy13DateFormatter8fromTimeB5cxx11ERKNSt6chrono10time_pointINSA_3_V212system_clockENSA_8durationIlSt5ratioILl1ELl1000000000EEEEEEEN10CachedTime9FormattedEESaISO_ENSt8__detail10_Select1stESt8equal_toIS5_ESt4hashIS5_ENSQ_18_Mod_range_hashingENSQ_20_Default_ranged_hashENSQ_20_Prime_rehash_policyENSQ_17_Hashtable_traitsILb1ELb0ELb1EEEE19_M_find_before_nodeEmRS7_m.constprop.1063+0x2e()
+_ZNK5Envoy13DateFormatter8fromTimeB5cxx11ERKNSt6chrono10time_pointINS1_3_V212system_clockENS1_8durationIlSt5ratioILl1ELl1000000000EEEEEE+0xb9()
+_ZN5Envoy13DateFormatter3nowB5cxx11ERNS_10TimeSourceE+0x39()
+_ZN5Envoy4Http26TlsCachingDateProviderImpl13onRefreshDateEv+0x32()
+_ZN5Envoy4Http26TlsCachingDateProviderImplC1ERNS_5Event10DispatcherERNS_11ThreadLocal13SlotAllocatorE+0x97()
+_ZNSt17_Function_handlerIFSt10shared_ptrIN5Envoy9Singleton8InstanceEEvEZNS1_10Extensions14NetworkFilters21HttpConnectionManager40HttpConnectionManagerFilterConfigFactory33createFilterFactoryFromProtoTypedERKN5envoy6config6filter7network23http_connection_manager2v221HttpConnectionManagerERNS1_6Server13Configuration14FactoryContextEEUlvE_E9_M_invokeERKSt9_Any_data+0x61()
+_ZN5Envoy9Singleton11ManagerImpl3getERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt8functionIFSt10shared_ptrINS0_8InstanceEEvEE+0x2b6()
+_ZN5Envoy10Extensions14NetworkFilters21HttpConnectionManager40HttpConnectionManagerFilterConfigFactory33createFilterFactoryFromProtoTypedERKN5envoy6config6filter7network23http_connection_manager2v221HttpConnectionManagerERNS_6Server13Configuration14FactoryContextE+0xb7()
+_ZN5Envoy10Extensions14NetworkFilters6Common11FactoryBaseIN5envoy6config6filter7network23http_connection_manager2v221HttpConnectionManagerESA_E28createFilterFactoryFromProtoERKN6google8protobuf7MessageERNS_6Server13Configuration14FactoryContextE+0x9d()
+_ZN5Envoy6Server28ProdListenerComponentFactory31createNetworkFilterFactoryList_ERKN6google8protobuf16RepeatedPtrFieldIN5envoy3api2v28listener6FilterEEERNS0_13Configuration14FactoryContextE+0x864()
+_ZN5Envoy6Server12ListenerImplC1ERKN5envoy3api2v28ListenerERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERNS0_19ListenerManagerImplESF_bbm+0xc30()
+_ZN5Envoy6Server19ListenerManagerImpl19addOrUpdateListenerERKN5envoy3api2v28ListenerERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEb+0x22e()
+_ZN5Envoy6Server13Configuration8MainImpl10initializeERKN5envoy6config9bootstrap2v29BootstrapERNS0_8InstanceERNS_8Upstream21ClusterManagerFactoryE+0x3a6()
+_ZN5Envoy6Server12InstanceImpl10initializeERKNS0_7OptionsESt10shared_ptrIKNS_7Network7Address8InstanceEERNS0_16ComponentFactoryERNS_9TestHooksE+0x1dab()
+_ZN5Envoy6Server12InstanceImplC1ERKNS0_7OptionsERNS_5Event10TimeSystemESt10shared_ptrIKNS_7Network7Address8InstanceEERNS_9TestHooksERNS0_10HotRestartERNS_5Stats9StoreRootERNS_6Thread13BasicLockableERNS0_16ComponentFactoryEOSt10unique_ptrINS_7Runtime15RandomGeneratorESt14default_deleteISS_EERNS_11ThreadLocal8InstanceERNSL_13ThreadFactoryERNS_10Filesystem8InstanceE+0x63a()
+_ZN5Envoy14MainCommonBaseC1ERKNS_11OptionsImplERNS_5Event10TimeSystemERNS_9TestHooksERNS_6Server16ComponentFactoryEOSt10unique_ptrINS_7Runtime15RandomGeneratorESt14default_deleteISE_EERNS_6Thread13ThreadFactoryERNS_10Filesystem8InstanceE+0x70e()
+_ZN5Envoy10MainCommonC1EiPKPKc+0x116()
+main+0x36()
+_start_crt+0x83()
+_start+0x18()
+```
 
 ### Final binary requires GCC7 package
 
@@ -69,45 +106,14 @@ $ ldd bazel-bin/source/exe/envoy-static
 
 Headline covers it.
 
+```
+$ export JAVA_HOME="/opt/local/java/openjdk8"
+$ bazel test --host_javabase=@local_jdk//:jdk //test/... 
+```
+
 ### Hot restart disabled
 
-Currently we pass `--define hot_restart=disabled` when building  to disable Hot restart (ie. restart Envoy without client connections being closed). Hot restart is disabled because it didn't work without modifications and I didn't have a need for it. 
-
-### Backtrace disabled
-
-Due to issues when building 1.8 (didn't encounter these with 1.7) backtrace is currently disabled with the `--define signal_trace=disabled` flag. 
-
-We run in to the following error when building:
-
-```
-DEBUG: /root/envoy/bazel/repositories.bzl:121:5: External dep build exited with return code: 0
-INFO: Analysed target //source/exe:envoy-static (1 packages loaded).
-INFO: Found 1 target...
-INFO: From Compiling external/com_google_absl/absl/time/internal/cctz/src/civil_time_detail.cc:
-In file included from external/com_google_absl/absl/time/internal/cctz/src/civil_time_detail.cc:15:0:
-external/com_google_absl/absl/time/internal/cctz/include/cctz/civil_time_detail.h: In function 'int absl::time_internal::cctz::detail::impl::days_per_month(absl::time_internal::cctz::year_t, absl::time_internal::cctz::detail::month_t)':
-external/com_google_absl/absl/time/internal/cctz/include/cctz/civil_time_detail.h:101:28: warning: array subscript has type 'char' [-Wchar-subscripts]
-   return k_days_per_month[m] + (m == 2 && is_leap_year(y));
-                            ^
-ERROR: /root/envoy/source/exe/BUILD:82:1: C++ compilation of rule '//source/exe:sigaction_lib' failed (Exit 1)
-In file included from bazel-out/solaris-opt/bin/source/server/_virtual_includes/backtrace_lib/server/backtrace.h:3:0,
-                 from bazel-out/solaris-opt/bin/source/exe/_virtual_includes/sigaction_lib/exe/signal_action.h:10,
-                 from source/exe/signal_action.cc:1:
-external/com_github_bombela_backward/backward.hpp: In member function 'std::size_t backward::StackTraceImpl<backward::system_tag::unknown_tag>::load_here(std::size_t)':
-external/com_github_bombela_backward/backward.hpp:795:22: error: 'backtrace' was not declared in this scope
-   size_t trace_cnt = backtrace(&_stacktrace[0], _stacktrace.size());
-                      ^~~~~~~~~
-external/com_github_bombela_backward/backward.hpp:795:22: note: suggested alternative: '_stacktrace'
-   size_t trace_cnt = backtrace(&_stacktrace[0], _stacktrace.size());
-                      ^~~~~~~~~
-                      _stacktrace
-Target //source/exe:envoy-static failed to build
-Use --verbose_failures to see the command lines of failed build steps.
-```
-
-### Linker spits out massive number of warnings
-
-On completion the linker spits out a massive number of warnings (most about relocations). So massive that it takes a couple of minutes for the terminal to catch up. As far as I can tell this is not a problem for the final binary. However this is something that should obviously be addressed at some point.
+Currently we pass `--define hot_restart=disabled` when building to disable Hot restart (ie. restart Envoy without client connections being closed). Hot restart is disabled because it didn't work without modifications and I didn't have a need for it. 
 
 # Original Envoy Readme
 

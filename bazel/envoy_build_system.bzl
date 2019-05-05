@@ -39,7 +39,6 @@ def envoy_copts(repository, test = False):
         "-Wold-style-cast",
         "-Wvla",
         "-std=c++14",
-        "-static",
     ]
 
     msvc_options = [
