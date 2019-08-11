@@ -27,13 +27,14 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://files.pythonhosted.org/packages/c6/b4/510617906f8e0c5660e7d96fbc5585113f83ad547a3989b80297ac72a74c/thrift-0.11.0.tar.gz"],
     ),
     com_github_c_ares_c_ares = dict(
-        sha256 = "bbaab13d6ad399a278d476f533e4d88a7ec7d729507348bb9c2e3b207ba4c606",
-        strip_prefix = "c-ares-d7e070e7283f822b1d2787903cce3615536c5610",
+        sha256 = "8ef084d46f17b43f77985b852802eeb2a97e926ee9922f85fcf134c5c3e6b84d",
+        strip_prefix = "c-ares-33ed2aa6d13721b395d14cfdaafdb1f80bb05242",
         # 2019-06-19
         # 27 new commits from release-1.15.0. Upgrade for commit 7d3591ee8a1a63e7748e68e6d880bd1763a32885 "getaddrinfo enhancements" and follow up fixes.
         # Use getaddrinfo to query DNS record and TTL.
+        # Solaris needs atleast commit 33ed2aa6d13721b395d14cfdaafdb1f80bb05242 "Add missing limits.h include from ares_getaddrinfo.c".
         # TODO(crazyxy): Update to release-1.16.0 when it is released.
-        urls = ["https://github.com/c-ares/c-ares/archive/d7e070e7283f822b1d2787903cce3615536c5610.tar.gz"],
+        urls = ["https://github.com/c-ares/c-ares/archive/33ed2aa6d13721b395d14cfdaafdb1f80bb05242.tar.gz"],
     ),
     com_github_circonus_labs_libcircllhist = dict(
         sha256 = "8165aa25e529d7d4b9ae849d3bf30371255a99d6db0421516abcff23214cdc2c",
@@ -216,7 +217,7 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/grpc-ecosystem/grpc-httpjson-transcoding/archive/64d6ac985360b624d8e95105701b64a3814794cd.tar.gz"],
     ),
     io_bazel_rules_go = dict(
-        sha256 = "6ede5b27a5e9280fe1e6b220007d8dc75c83e6c0b2d48f21dff5c45b",
+        sha256 = "883aa57fd1d5a13b5962dc8685d7be9a86b467bd13330f4ab8d879e41847ae70",
         strip_prefix = "rules_go-2223cccf0f0bfd65cfd000ecf5827521dd4cfb07",
         urls = ["https://github.com/siepkes/rules_go/archive/2223cccf0f0bfd65cfd000ecf5827521dd4cfb07.tar.gz"],
     ),
