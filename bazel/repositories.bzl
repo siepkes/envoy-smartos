@@ -317,8 +317,6 @@ def _net_zlib():
     http_archive(
         name = "net_zlib",
         build_file_content = BUILD_ALL_CONTENT,
-        # The patch is only needed due to https://github.com/madler/zlib/pull/420
-        # TODO(htuch): remove this when zlib #420 merges.
         patch_args = ["-p1"],
         patches = ["@envoy//bazel/foreign_cc:zlib.patch"],
         **location
@@ -683,6 +681,8 @@ def _com_github_gperftools_gperftools():
         name = "com_github_gperftools_gperftools",
         build_file_content = BUILD_ALL_CONTENT,
         patch_cmds = ["./autogen.sh"],
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel/foreign_cc:gperftools.patch"],
         **location
     )
 
