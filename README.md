@@ -54,6 +54,10 @@ $ strip --strip-debug ./bazel-bin/source/exe/envoy-static
 
 Below is a list of known issues of this port. These are mostly open issues because they represent functionality I didn't need right away and stood in the way of doing a sucessful build. I'm obviously open to any PR / help anyone can offer though!
 
+### Make event ports work
+
+Currently we disable event ports by using the environmental variable `EVENT_NOEVPORT=yes`. When using event ports Envoy (or more likely libevent) starts making a massive number of syscalls. I'm guessing this is because some (event) loop in libevent is going haywire. Probably need to take a look at `libevent_scheduler.cc` how libevent is configured.
+
 ### Optimized builds segfault
 
 ```
