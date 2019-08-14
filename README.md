@@ -44,11 +44,17 @@ WARNING: As you can see we are building with the debug profile (dbg). Building w
 
 This will result in a statically linked binary of Envoy in `./bazel-bin/source/exe/envoy-static`. 
 
-The binary will include debug symbols which you can strip to bring down the size of the binary substantially. Beware that this will make the backtrace library unusable (ie. stacktrace become hard to read):
+The binary will include debug symbols which you can strip to bring down the size of the binary substantially. Beware that this will make the backtrace library unusable (ie. stacktraces become hard to read):
 
 ```
 $ strip --strip-debug ./bazel-bin/source/exe/envoy-static
 ```
+
+### Notes for 1.11.0
+
+### c_ares version bump
+
+c_ares was bumped from commit `7d3591ee8a1a63e7748e68e6d880bd1763a32885` to `33ed2aa6d13721b395d14cfdaafdb1f80bb05242`. This bumped is needed to make c_ares build on SmartOS. There are 7 other commits in this range which contain various bugfixes.
 
 ## Known issues
 
