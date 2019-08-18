@@ -123,9 +123,10 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/siepkes/dd-opentracing-cpp/archive/0f94c322232f99a49158b9cf9e388275d0baf5ca.tar.gz"],
     ),
     com_github_google_benchmark = dict(
-        sha256 = "3c6a165b6ecc948967a1ead710d4a181d7b0fbcaa183ef7ea84604994966221a",
-        strip_prefix = "benchmark-1.5.0",
-        urls = ["https://github.com/google/benchmark/archive/v1.5.0.tar.gz"],
+        sha256 = "d5c2897a321bd6024139717775752be7c9f6e17c6493452a1c3d8ae4911a274f",
+        strip_prefix = "benchmark-c1a64c001f7a4ca5c177cd3ac4a106263ae5d12e",
+        # Fix for 1.5.0 which doesn't build on Solaris.
+        urls = ["https://github.com/siepkes/benchmark/archive/c1a64c001f7a4ca5c177cd3ac4a106263ae5d12e.tar.gz"],
     ),
     com_github_libevent_libevent = dict(
         sha256 = "549d34065eb2485dfad6c8de638caaa6616ed130eec36dd978f73b6bdd5af113",
