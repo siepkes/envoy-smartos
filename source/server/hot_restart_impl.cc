@@ -1,12 +1,6 @@
 #include "server/hot_restart_impl.h"
 
-<<<<<<< HEAD
-||||||| parent of 416cb9f56... Changes to make v1.10.0 build on SmartOS.
-#include <signal.h>
-=======
-#include <signal.h>
 #ifndef __sun
->>>>>>> 416cb9f56... Changes to make v1.10.0 build on SmartOS.
 #include <sys/prctl.h>
 #endif
 #include <sys/types.h>
