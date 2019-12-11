@@ -1,0 +1,57 @@
+From 1fc820401aa5330cf1a03ff3b20ae5b3160123dc Mon Sep 17 00:00:00 2001
+From: Jasper Siepkes <siepkes@serviceplanet.nl>
+Date: Tue, 16 Apr 2019 10:14:10 +0200
+Subject: [PATCH] Fix program counter detection on Solaris
+
+---
+ m4/pc_from_ucontext.m4 | 5 ++++-
+ src/getpc.h            | 3 +++
+ src/profiler.cc        | 3 +++
+ 3 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/m4/pc_from_ucontext.m4 b/m4/pc_from_ucontext.m4
+index 7114bd0..2c0caaf 100644
+--- a/m4/pc_from_ucontext.m4
++++ b/m4/pc_from_ucontext.m4
+@@ -65,7 +65,10 @@ AC_DEFUN([AC_PC_FROM_UCONTEXT],
+                         pc_field_found=true)
+        elif test "x$ac_cv_header_sys_ucontext_h" = xyes; then
+          AC_TRY_COMPILE([#define _GNU_SOURCE 1
+-                        #include <sys/ucontext.h>],
++                        #include <sys/ucontext.h>,
++                        #if defined(__sun)
++                        #include <sys/regset.h>
++                        #endif],
+                         [ucontext_t u; return u.$pc_field == 0;],
+                         AC_DEFINE_UNQUOTED(PC_FROM_UCONTEXT, $pc_field,
+                                            How to access the PC from a struct ucontext)
+diff --git a/src/getpc.h b/src/getpc.h
+index 9605363..7fbd86b 100644
+--- a/src/getpc.h
++++ b/src/getpc.h
+@@ -61,6 +61,9 @@
+ #endif
+ #if defined(HAVE_SYS_UCONTEXT_H)
+ #include <sys/ucontext.h>
++#if defined(__sun)
++#include <sys/regset.h>
++#endif
+ #elif defined(HAVE_UCONTEXT_H)
+ #include <ucontext.h>       // for ucontext_t (and also mcontext_t)
+ #elif defined(HAVE_CYGWIN_SIGNAL_H)
+diff --git a/src/profiler.cc b/src/profiler.cc
+index 3bd0ed9..c7b6a04 100644
+--- a/src/profiler.cc
++++ b/src/profiler.cc
+@@ -46,6 +46,9 @@
+ #endif
+ #if defined(HAVE_SYS_UCONTEXT_H)
+ #include <sys/ucontext.h>
++#if defined(__sun)
++#include <sys/regset.h>
++#endif
+ #elif defined(HAVE_UCONTEXT_H)
+ #include <ucontext.h>
+ #elif defined(HAVE_CYGWIN_SIGNAL_H)
+-- 
+2.21.0

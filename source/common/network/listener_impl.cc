@@ -74,9 +74,11 @@ ListenerImpl::ListenerImpl(Event::DispatcherImpl& dispatcher, Socket& socket, Li
 }
 
 void ListenerImpl::errorCallback(evconnlistener*, void*) {
-  // We should never get an error callback. This can happen if we run out of FDs or memory. In those
-  // cases just crash.
-  PANIC(fmt::format("listener accept failure: {}", strerror(errno)));
+  if (errno != EAGAIN) {
+    // We should never get an error callback that isn't a temporary failure. This can happen if 
+    // we run out of FDs or memory. In those cases just crash.
+    PANIC(fmt::format("listener accept failure: {}", strerror(errno)));
+  }
 }
 
 void ListenerImpl::enable() {

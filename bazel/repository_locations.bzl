@@ -22,15 +22,16 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/envoyproxy/envoy-build-tools/archive/a6b28555badcb18d6be924c8fc1bea49971656b8.tar.gz"],
     ),
     boringssl = dict(
-        sha256 = "891352824e0f7977bc0c291b8c65076e3ed23630334841b93f346f12d4484b06",
-        strip_prefix = "boringssl-5565939d4203234ddc742c02241ce4523e7b3beb",
+        sha256 = "35630c62a37149e95bde48de7482b1c796972aeff6196635ea3af9067b1e2876",
+        strip_prefix = "boringssl-7c5c80729f59513b54e4b231d1cfa0d6a8e5da9e",
         # To update BoringSSL, which tracks Chromium releases:
         # 1. Open https://omahaproxy.appspot.com/ and note <current_version> of linux/beta release.
         # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<current_version>/DEPS and note <boringssl_revision>.
         # 3. Find a commit in BoringSSL's "master-with-bazel" branch that merges <boringssl_revision>.
         #
         # chromium-78.0.3904.21 (BETA)
-        urls = ["https://github.com/google/boringssl/archive/5565939d4203234ddc742c02241ce4523e7b3beb.tar.gz"],
+        # Use commits from branch "smartos-78.0.3904.21" (chromium-stable-with-bazel)
+        urls = ["https://github.com/siepkes/boringssl/archive/7c5c80729f59513b54e4b231d1cfa0d6a8e5da9e.tar.gz"],
     ),
     boringssl_fips = dict(
         sha256 = "b12ad676ee533824f698741bd127f6fbc82c46344398a6d78d25e62c6c418c73",
@@ -49,13 +50,14 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://files.pythonhosted.org/packages/c6/b4/510617906f8e0c5660e7d96fbc5585113f83ad547a3989b80297ac72a74c/thrift-0.11.0.tar.gz"],
     ),
     com_github_c_ares_c_ares = dict(
-        sha256 = "bbaab13d6ad399a278d476f533e4d88a7ec7d729507348bb9c2e3b207ba4c606",
-        strip_prefix = "c-ares-d7e070e7283f822b1d2787903cce3615536c5610",
+        sha256 = "8ef084d46f17b43f77985b852802eeb2a97e926ee9922f85fcf134c5c3e6b84d",
+        strip_prefix = "c-ares-33ed2aa6d13721b395d14cfdaafdb1f80bb05242",
         # 2019-06-19
         # 27 new commits from release-1.15.0. Upgrade for commit 7d3591ee8a1a63e7748e68e6d880bd1763a32885 "getaddrinfo enhancements" and follow up fixes.
         # Use getaddrinfo to query DNS record and TTL.
+        # Solaris needs atleast commit 33ed2aa6d13721b395d14cfdaafdb1f80bb05242 "Add missing limits.h include from ares_getaddrinfo.c".
         # TODO(crazyxy): Update to release-1.16.0 when it is released.
-        urls = ["https://github.com/c-ares/c-ares/archive/d7e070e7283f822b1d2787903cce3615536c5610.tar.gz"],
+        urls = ["https://github.com/c-ares/c-ares/archive/33ed2aa6d13721b395d14cfdaafdb1f80bb05242.tar.gz"],
     ),
     com_github_circonus_labs_libcircllhist = dict(
         sha256 = "8165aa25e529d7d4b9ae849d3bf30371255a99d6db0421516abcff23214cdc2c",
@@ -103,9 +105,10 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/gperftools/gperftools/archive/fc00474ddc21fff618fc3f009b46590e241e425e.tar.gz"],
     ),
     com_github_grpc_grpc = dict(
-        sha256 = "cce1d4585dd017980d4a407d8c5e9f8fc8c1dbb03f249b99e88a387ebb45a035",
-        strip_prefix = "grpc-1.22.1",
-        urls = ["https://github.com/grpc/grpc/archive/v1.22.1.tar.gz"],
+        sha256 = "1a6184a8c7e76ff28f07da2ff996db7cc4bd206bcd3d2d30c7cecd7da05d3dd6",
+        # SmartOS gRPC 1.21.1
+        strip_prefix = "grpc-3b9f10adf622a6580f5052ceb40d8ade703ae127",
+        urls = ["https://github.com/grpc/grpc/archive/3b9f10adf622a6580f5052ceb40d8ade703ae127.tar.gz"],
     ),
     com_github_luajit_luajit = dict(
         sha256 = "409f7fe570d3c16558e594421c47bdd130238323c9d6fd6c83dedd2aaeb082a8",
@@ -138,9 +141,10 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/DataDog/dd-opentracing-cpp/archive/v1.1.1.tar.gz"],
     ),
     com_github_google_benchmark = dict(
-        sha256 = "3c6a165b6ecc948967a1ead710d4a181d7b0fbcaa183ef7ea84604994966221a",
-        strip_prefix = "benchmark-1.5.0",
-        urls = ["https://github.com/google/benchmark/archive/v1.5.0.tar.gz"],
+        sha256 = "d5c2897a321bd6024139717775752be7c9f6e17c6493452a1c3d8ae4911a274f",
+        strip_prefix = "benchmark-c1a64c001f7a4ca5c177cd3ac4a106263ae5d12e",
+        # Fix for 1.5.0 which doesn't build on Illumos.
+        urls = ["https://github.com/siepkes/benchmark/archive/c1a64c001f7a4ca5c177cd3ac4a106263ae5d12e.tar.gz"],
     ),
     com_github_libevent_libevent = dict(
         sha256 = "549d34065eb2485dfad6c8de638caaa6616ed130eec36dd978f73b6bdd5af113",
@@ -234,8 +238,9 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/grpc-ecosystem/grpc-httpjson-transcoding/archive/2feabd5d64436e670084091a937855972ee35161.tar.gz"],
     ),
     io_bazel_rules_go = dict(
-        sha256 = "842ec0e6b4fbfdd3de6150b61af92901eeb73681fd4d185746644c338f51d4c0",
-        urls = ["https://github.com/bazelbuild/rules_go/releases/download/v0.20.1/rules_go-v0.20.1.tar.gz"],
+        sha256 = "b810ab7cc96b37950c4e0d6bb0030084e4bb0c2eadbf574dc1ecfdb9881fc13f",
+        strip_prefix = "rules_go-2c0c076ae821cf7063de55d80f962c2ad048b8e1",
+        urls = ["https://github.com/siepkes/rules_go/archive/2c0c076ae821cf7063de55d80f962c2ad048b8e1.tar.gz"],
     ),
     rules_foreign_cc = dict(
         sha256 = "3184c244b32e65637a74213fc448964b687390eeeca42a36286f874c046bba15",

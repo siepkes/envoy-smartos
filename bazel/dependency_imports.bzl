@@ -9,7 +9,10 @@ GO_VERSION = "1.13.3"
 def envoy_dependency_imports(go_version = GO_VERSION):
     rules_foreign_cc_dependencies()
     go_rules_dependencies()
-    go_register_toolchains(go_version)
+    # Using 'host' makes Bazel use the go installation on our host. This
+    # is needed because the 'io_bazel_rules_go' tries to download a GO 
+    # installation. However it can't download one for Illumos / Solaris.
+    go_register_toolchains(go_version = "host")
     rbe_toolchains_config()
     gazelle_dependencies()
 

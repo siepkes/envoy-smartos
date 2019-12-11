@@ -3,6 +3,11 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#ifdef __sun
+// This is where the FIONREAD macro lives.
+#include <sys/filio.h>
+#endif
+
 #include <algorithm>
 #include <cstdint>
 #include <cstring>

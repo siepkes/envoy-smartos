@@ -37,7 +37,8 @@ def envoy_cc_binary(
         linkstatic = 1,
         visibility = visibility,
         malloc = tcmalloc_external_dep(repository),
-        stamp = 1,
+        # FIXME: Solaris ld doesn't support build-ld. Fix more elegantly.
+        stamp = 0,
         deps = deps,
         tags = tags,
     )
@@ -67,11 +68,14 @@ def _envoy_linkopts():
             "-pthread",
             "-lrt",
             "-ldl",
-            "-Wl,--hash-style=gnu",
+            # FIXME: GNU LD supports this option but the Illumos linker doesn't.
+            #'-Wl,--hash-style=gnu',
         ],
     }) + select({
         "@envoy//bazel:boringssl_fips": [],
-        "//conditions:default": ["-pie"],
+        # FIXME: GCC on Illumos doesn't support position independent executables?
+        # "//conditions:default": ["-pie"],
+        "//conditions:default": [],
     }) + _envoy_select_exported_symbols(["-Wl,-E"])
 
 def _envoy_stamped_deps():
@@ -101,6 +105,7 @@ def _envoy_stamped_linkopts():
 
         # Note: assumes GNU GCC (or compatible) handling of `--build-id` flag.
         "//conditions:default": [
-            "-Wl,@$(location @envoy//bazel:gnu_build_id.ldscript)",
+            # TODO: Ilumos ld doesn't support build-ld. Fix more elegantly.
+            # "-Wl,@$(location @envoy//bazel:gnu_build_id.ldscript)",
         ],
     })
