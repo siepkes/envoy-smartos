@@ -37,7 +37,7 @@ $ git clone https://github.com/siepkes/envoy-smartos.git
 Build Envoy:
 ```
 $ cd envoy-smartos
-$ bazel --bazelrc=/dev/null build -c dbg --jobs=4 --define hot_restart=disabled --package_path %workspace%:/root/envoy/ //source/exe:envoy-static
+$ bazel --bazelrc=/dev/null build -c dbg --jobs=2 --define hot_restart=disabled --package_path %workspace%:/root/envoy/ //source/exe:envoy-static
 ```
 
 WARNING: As you can see we are building with the debug profile (dbg). Building with the optimized profile (opt) leads to segmentation faults when running Envoy.
@@ -114,11 +114,13 @@ $ ldd bazel-bin/source/exe/envoy-static
 
 ### Get entire test suite to run
 
-Headline covers it.
+Headline covers it. 
+
+Using more then 2 concurrent jobs (`--jobs=2`) is not advisable since parallel execution requires a lot of memory and you might run in to "out of memory" errors.
 
 ```
 $ export JAVA_HOME="/opt/local/java/openjdk8"
-$ bazel test --action_env=BAZEL_LINKOPTS=-lm  --define hot_restart=disabled --host_javabase=@local_jdk//:jdk //test/... 
+$ bazel test --jobs=2 --define hot_restart=disabled --host_javabase=@local_jdk//:jdk //test/... 
 ```
 
 ### Hot restart disabled
