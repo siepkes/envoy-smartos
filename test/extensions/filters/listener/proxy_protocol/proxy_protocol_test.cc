@@ -29,6 +29,11 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+#ifdef __sun
+// This is where the FIONREAD macro lives.
+#include <sys/filio.h>
+#endif
+
 using testing::_;
 using testing::AnyNumber;
 using testing::AtLeast;

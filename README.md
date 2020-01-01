@@ -118,12 +118,12 @@ Headline covers it.
 
 ```
 $ export JAVA_HOME="/opt/local/java/openjdk8"
-$ bazel test --host_javabase=@local_jdk//:jdk //test/... 
+$ bazel test --action_env=BAZEL_LINKOPTS=-lm  --define hot_restart=disabled --host_javabase=@local_jdk//:jdk //test/... 
 ```
 
 ### Hot restart disabled
 
-Currently we pass `--define hot_restart=disabled` when building to disable Hot restart (ie. restart Envoy without client connections being closed). Hot restart is disabled because it didn't work without modifications and I didn't have a need for it. 
+Currently we pass `--define hot_restart=disabled` when building / testing to disable Hot restart (ie. restart Envoy without client connections being closed) because it doesn't build at the moment without additional work.
 
 # Original Envoy Readme
 
