@@ -27,15 +27,15 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/envoyproxy/envoy-build-tools/archive/84ca08de00eedd0ba08e7d5551108d6f03f5d362.tar.gz"],
     ),
     boringssl = dict(
-        sha256 = "a3d4de4f03cb321ef943678d72a045c9a19d26b23d6f4e313f97600c65201a27",
-        strip_prefix = "boringssl-1c2769383f027befac5b75b6cedd25daf3bf4dcf",
+        sha256 = "1d9a71db70558b85d115c8db9deb195a0b7748e547791ccc211981d177097318",
+        strip_prefix = "boringssl-5852cd0355c498090901dc4c6c52c90b3948b4ed",
         # To update BoringSSL, which tracks Chromium releases:
         # 1. Open https://omahaproxy.appspot.com/ and note <current_version> of linux/stable release.
         # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<current_version>/DEPS and note <boringssl_revision>.
         # 3. Find a commit in BoringSSL's "master-with-bazel" branch that merges <boringssl_revision>.
         #
         # chromium-81.0.4044.69
-        urls = ["https://github.com/google/boringssl/archive/1c2769383f027befac5b75b6cedd25daf3bf4dcf.tar.gz"],
+        urls = ["https://github.com/siepkes/boringssl/archive/5852cd0355c498090901dc4c6c52c90b3948b4ed.tar.gz"],
     ),
     boringssl_fips = dict(
         sha256 = "b12ad676ee533824f698741bd127f6fbc82c46344398a6d78d25e62c6c418c73",
@@ -54,13 +54,10 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://files.pythonhosted.org/packages/c6/b4/510617906f8e0c5660e7d96fbc5585113f83ad547a3989b80297ac72a74c/thrift-0.11.0.tar.gz"],
     ),
     com_github_c_ares_c_ares = dict(
-        sha256 = "bbaab13d6ad399a278d476f533e4d88a7ec7d729507348bb9c2e3b207ba4c606",
-        strip_prefix = "c-ares-d7e070e7283f822b1d2787903cce3615536c5610",
-        # 2019-06-19
-        # 27 new commits from release-1.15.0. Upgrade for commit 7d3591ee8a1a63e7748e68e6d880bd1763a32885 "getaddrinfo enhancements" and follow up fixes.
-        # Use getaddrinfo to query DNS record and TTL.
-        # TODO(crazyxy): Update to release-1.16.0 when it is released.
-        urls = ["https://github.com/c-ares/c-ares/archive/d7e070e7283f822b1d2787903cce3615536c5610.tar.gz"],
+        sha256 = "870962cc8f6b352303c404ce848e2ea1f1072f3c0a940042209a72179511c08c",
+        strip_prefix = "c-ares-cares-1_16_1",
+        # Solaris needs atleast commit 33ed2aa6d13721b395d14cfdaafdb1f80bb05242 "Add missing limits.h include from ares_getaddrinfo.c".
+        urls = ["https://github.com/c-ares/c-ares/archive/cares-1_16_1.tar.gz"],
     ),
     com_github_circonus_labs_libcircllhist = dict(
         sha256 = "8165aa25e529d7d4b9ae849d3bf30371255a99d6db0421516abcff23214cdc2c",
@@ -111,9 +108,11 @@ REPOSITORY_LOCATIONS = dict(
     com_github_grpc_grpc = dict(
         # TODO(JimmyCYJ): Bump to release 1.27
         # This sha on grpc:v1.25.x branch is specifically chosen to fix gRPC STS call credential options.
-        sha256 = "bbc8f020f4e85ec029b047fab939b8c81f3d67254b5c724e1003a2bc49ddd123",
-        strip_prefix = "grpc-d8f4928fa779f6005a7fe55a176bdb373b0f910f",
-        urls = ["https://github.com/grpc/grpc/archive/d8f4928fa779f6005a7fe55a176bdb373b0f910f.tar.gz"],
+        # Envoy 1.14.1 uses gRPC commit `d8f4928fa779f6005a7fe55a176bdb373b0f910f` this uses a branch from that to
+        # add some Illumos compatbility fixes.
+        sha256 = "5188c680705cbce83851fb5f943b5501b58e4967f4b39f3453761e44a05cb01e",
+        strip_prefix = "grpc-23e8d3a22b2575ce1ddc66d21074b604522d80f0",
+        urls = ["https://github.com/grpc/grpc/archive/23e8d3a22b2575ce1ddc66d21074b604522d80f0.tar.gz"],
     ),
     com_github_luajit_luajit = dict(
         sha256 = "409f7fe570d3c16558e594421c47bdd130238323c9d6fd6c83dedd2aaeb082a8",
@@ -147,9 +146,10 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/DataDog/dd-opentracing-cpp/archive/v1.1.3.tar.gz"],
     ),
     com_github_google_benchmark = dict(
-        sha256 = "3c6a165b6ecc948967a1ead710d4a181d7b0fbcaa183ef7ea84604994966221a",
-        strip_prefix = "benchmark-1.5.0",
-        urls = ["https://github.com/google/benchmark/archive/v1.5.0.tar.gz"],
+        sha256 = "d5c2897a321bd6024139717775752be7c9f6e17c6493452a1c3d8ae4911a274f",
+        strip_prefix = "benchmark-c1a64c001f7a4ca5c177cd3ac4a106263ae5d12e",
+        # Fix for 1.5.0 which doesn't build on Illumos.
+        urls = ["https://github.com/siepkes/benchmark/archive/c1a64c001f7a4ca5c177cd3ac4a106263ae5d12e.tar.gz"],
     ),
     com_github_libevent_libevent = dict(
         sha256 = "549d34065eb2485dfad6c8de638caaa6616ed130eec36dd978f73b6bdd5af113",
@@ -241,8 +241,9 @@ REPOSITORY_LOCATIONS = dict(
         urls = ["https://github.com/grpc-ecosystem/grpc-httpjson-transcoding/archive/faf8af1e9788cd4385b94c8f85edab5ea5d4b2d6.tar.gz"],
     ),
     io_bazel_rules_go = dict(
-        sha256 = "e88471aea3a3a4f19ec1310a55ba94772d087e9ce46e41ae38ecebe17935de7b",
-        urls = ["https://github.com/bazelbuild/rules_go/releases/download/v0.20.3/rules_go-v0.20.3.tar.gz"],
+        sha256 = "39d476b5f3de2dc57775afdd1e22141ec491b0b050509c97209bc7e083331913",
+        strip_prefix = "rules_go-cdd75a833c699889b328fe2cd46bf0c289ff435c",
+        urls = ["https://github.com/siepkes/rules_go/archive/cdd75a833c699889b328fe2cd46bf0c289ff435c.tar.gz"],
     ),
     rules_foreign_cc = dict(
         sha256 = "3184c244b32e65637a74213fc448964b687390eeeca42a36286f874c046bba15",
