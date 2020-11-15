@@ -14,12 +14,18 @@ load("@thrift_pip3//:requirements.bzl", thrift_pip_install = "pip_install")
 load("@rules_antlr//antlr:deps.bzl", "antlr_dependencies")
 
 # go version for rules_go
-GO_VERSION = "1.14.7"
+
+# Align the Go version with the version that is installed in Illumos since we added the
+# 'go_register_toolchains(go_version = "host")' directive.
+GO_VERSION = "1.14.4"
 
 def envoy_dependency_imports(go_version = GO_VERSION):
     rules_foreign_cc_dependencies()
     go_rules_dependencies()
-    go_register_toolchains(go_version)
+    # Using 'host' makes Bazel use the go installation on our host. This
+    # is needed because the 'io_bazel_rules_go' tries to download a GO 
+    # installation. However it can't download one for Illumos / Solaris.
+    go_register_toolchains(go_version = "host")
     rbe_toolchains_config()
     gazelle_dependencies()
     apple_rules_dependencies()

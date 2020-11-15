@@ -106,8 +106,8 @@ DEPENDENCY_REPOSITORIES_SPEC = dict(
         project_name = "BoringSSL",
         project_desc = "Minimal OpenSSL fork",
         project_url = "https://github.com/google/boringssl",
-        version = "597b810379e126ae05d32c1d94b1a9464385acd0",
-        sha256 = "1ea42456c020daf0a9b0f9e8d8bc3a403c9314f4f54230c617257af996cd5fa6",
+        version = "4bb3143c52863981bf3e41550b7737c5183f101b",
+        sha256 = "4b01b0da344ab024c5862efe62dd00b66cf9d6957eaeaa2648ed463eb5f08885",
         strip_prefix = "boringssl-{version}",
         # To update BoringSSL, which tracks Chromium releases:
         # 1. Open https://omahaproxy.appspot.com/ and note <current_version> of linux/stable release.
@@ -115,7 +115,7 @@ DEPENDENCY_REPOSITORIES_SPEC = dict(
         # 3. Find a commit in BoringSSL's "master-with-bazel" branch that merges <boringssl_revision>.
         #
         # chromium-85.0.4183.83
-        urls = ["https://github.com/google/boringssl/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/boringssl/archive/{version}.tar.gz"],
         use_category = ["controlplane", "dataplane_core"],
         last_updated = "2020-06-23",
         cpe = "cpe:2.3:a:google:boringssl:*",
@@ -258,9 +258,11 @@ DEPENDENCY_REPOSITORIES_SPEC = dict(
         project_desc = "tcmalloc and profiling libraries",
         project_url = "https://github.com/gperftools/gperftools",
         version = "2.8",
-        sha256 = "240deacdd628b6459671b83eb0c4db8e97baadf659f25b92e9a078d536bd513e",
-        strip_prefix = "gperftools-{version}",
-        urls = ["https://github.com/gperftools/gperftools/releases/download/gperftools-{version}/gperftools-{version}.tar.gz"],
+        sha256 = "b09193adedcc679df2387042324d0d54b93d35d062ea9bff0340f342a709e860",
+        strip_prefix = "gperftools-gperftools-{version}",
+        # We use the source URL (not the releases URL) because the source contain 'autogen' and we need to
+        # patch the autoconf file.
+        urls = ["https://github.com/gperftools/gperftools/archive/gperftools-{version}.tar.gz"],
         last_updated = "2020-07-06",
         use_category = ["dataplane_core", "controlplane"],
         cpe = "cpe:2.3:a:gperftools_project:gperftools:*",
@@ -271,8 +273,10 @@ DEPENDENCY_REPOSITORIES_SPEC = dict(
         project_url = "https://grpc.io",
         # TODO(JimmyCYJ): Bump to release 1.27
         # This sha on grpc:v1.25.x branch is specifically chosen to fix gRPC STS call credential options.
-        version = "d8f4928fa779f6005a7fe55a176bdb373b0f910f",
-        sha256 = "bbc8f020f4e85ec029b047fab939b8c81f3d67254b5c724e1003a2bc49ddd123",
+        # Envoy 1.14.1 uses gRPC commit `d8f4928fa779f6005a7fe55a176bdb373b0f910f` this uses a branch from that to
+        # add some Illumos compatbility fixes.
+        version = "23e8d3a22b2575ce1ddc66d21074b604522d80f0",
+        sha256 = "5188c680705cbce83851fb5f943b5501b58e4967f4b39f3453761e44a05cb01e",
         strip_prefix = "grpc-{version}",
         urls = ["https://github.com/grpc/grpc/archive/{version}.tar.gz"],
         use_category = ["dataplane_core", "controlplane"],
@@ -564,9 +568,10 @@ DEPENDENCY_REPOSITORIES_SPEC = dict(
         project_name = "Go rules for Bazel",
         project_desc = "Bazel rules for the Go language",
         project_url = "https://github.com/bazelbuild/rules_go",
-        version = "0.23.7",
-        sha256 = "0310e837aed522875791750de44408ec91046c630374990edd51827cb169f616",
-        urls = ["https://github.com/bazelbuild/rules_go/releases/download/v{version}/rules_go-v{version}.tar.gz"],
+        version = "ffc81a18b81a025c8dc0d0dd2758eddedff78a81",
+        sha256 = "b401d85ab2da4ec1bc02525bf76552ed2e1a9cfbab680e2f24ae033534a8ca8c",
+        strip_prefix = "rules_go-{version}",        
+        urls = ["https://github.com/siepkes/rules_go/archive/{version}.tar.gz"],
         last_updated = "2020-08-06",
         use_category = ["build"],
     ),
