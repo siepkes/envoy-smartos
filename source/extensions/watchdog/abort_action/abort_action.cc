@@ -16,7 +16,7 @@ namespace Extensions {
 namespace Watchdog {
 namespace AbortAction {
 namespace {
-#ifdef __linux__
+#if defined(__linux__) || defined(__sun)
 pid_t toPlatformTid(int64_t tid) { return static_cast<pid_t>(tid); }
 #elif defined(__APPLE__)
 uint64_t toPlatformTid(int64_t tid) { return static_cast<uint64_t>(tid); }
