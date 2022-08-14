@@ -12,13 +12,18 @@ load("@base_pip3//:requirements.bzl", pip_dependencies = "install_deps")
 load("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
 
 # go version for rules_go
-GO_VERSION = "1.17.5"
+# Align the Go version with the version that is installed in Illumos since we added the
+# 'go_register_toolchains(go_version = "host")' directive.
+GO_VERSION = "1.17.6"
 
 def envoy_dependency_imports(go_version = GO_VERSION):
     # TODO: allow building of tools for easier onboarding
     rules_foreign_cc_dependencies(register_default_tools = False, register_built_tools = False)
     go_rules_dependencies()
-    go_register_toolchains(go_version)
+    # Using 'host' makes Bazel use the go installation on our host. This
+    # is needed because the 'io_bazel_rules_go' tries to download a GO 
+    # installation. However it can't download one for Illumos / Solaris.
+    go_register_toolchains(go_version = "host")
     gazelle_dependencies()
     apple_rules_dependencies()
     pip_dependencies()
