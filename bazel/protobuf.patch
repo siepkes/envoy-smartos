@@ -1,27 +1,35 @@
-diff --git a/BUILD b/BUILD
-index 1690d4219..8a7f1bf14 100644
---- a/BUILD
-+++ b/BUILD
-@@ -19,7 +19,7 @@ exports_files(["LICENSE"])
- # ZLIB configuration
- ################################################################################
+diff -uar ../protobuf-all-21.11-orig/protobuf-21.11/BUILD.bazel protobuf-21.11/BUILD.bazel
+--- ../protobuf-all-21.11-orig/protobuf-21.11/BUILD.bazel	2022-12-14 14:47:14.280134747 +0100
++++ protobuf-21.11/BUILD.bazel	2022-12-14 14:49:18.376959691 +0100
+@@ -18,7 +18,7 @@
  
--ZLIB_DEPS = ["@zlib//:zlib"]
-+ZLIB_DEPS = ["//external:zlib"]
+ licenses(["notice"])
+ 
+-exports_files(["LICENSE"])
++exports_files(["LICENSE", "zlib.BUILD"])
  
  ################################################################################
  # Protobuf Runtime Library
-diff --git a/python/google/protobuf/__init__.py b/python/google/protobuf/__init__.py
-index 9319c67f1..d85d53d4a 100644
---- a/python/google/protobuf/__init__.py
-+++ b/python/google/protobuf/__init__.py
-@@ -31,3 +31,9 @@
+@@ -138,7 +138,7 @@
+     visibility = ["//visibility:public"],
+     deps = [":protobuf_lite"] + select({
+         "//build_defs:config_msvc": [],
+-        "//conditions:default": ["@zlib//:zlib"],
++        "//conditions:default": ["//external:zlib"],
+     }),
+ )
+ 
+diff -uar ../protobuf-all-21.11-orig/protobuf-21.11/python/google/protobuf/__init__.py protobuf-21.11/python/google/protobuf/__init__.py
+--- ../protobuf-all-21.11-orig/protobuf-21.11/python/google/protobuf/__init__.py	2022-12-14 14:47:14.283134753 +0100
++++ protobuf-21.11/python/google/protobuf/__init__.py	2022-12-14 14:51:11.435723700 +0100
+@@ -31,3 +31,10 @@
  # Copyright 2007 Google Inc. All Rights Reserved.
  
- __version__ = '3.19.4'
+ __version__ = '4.21.11'
 +
 +if __name__ != '__main__':
 +  try:
 +    __import__('pkg_resources').declare_namespace(__name__)
 +  except ImportError:
 +    __path__ = __import__('pkgutil').extend_path(__path__, __name__)
++

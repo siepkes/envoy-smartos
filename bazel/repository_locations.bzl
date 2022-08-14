@@ -15,9 +15,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Gazelle",
         project_desc = "Bazel BUILD file generator for Go projects",
         project_url = "https://github.com/bazelbuild/bazel-gazelle",
-        version = "0.24.0",
-        sha256 = "de69a09dc70417580aabf20a28619bb3ef60d038470c7cf8442fafcf627c21cb",
-        urls = ["https://github.com/bazelbuild/bazel-gazelle/releases/download/v{version}/bazel-gazelle-v{version}.tar.gz"],
+        # Fork of version 0.24.0 with Illumos support.
+        version = "9a84657061207c1bb8e978e31042443c37520a54",
+        sha256 = "9dce8407d96a438892a5426a100d256e1f1db4f3b44bcacc8293289fdf56f99f",
+        strip_prefix = "bazel-gazelle-{version}",
+        urls = ["https://github.com/siepkes/bazel-gazelle/archive/{version}.tar.gz"],
         release_date = "2021-10-11",
         use_category = ["build"],
     ),
@@ -34,6 +36,21 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         release_date = "2021-11-30",
         use_category = ["build"],
     ),
+    # Even though the Bazel Illumos port has Illumos defined in the 'platform' repo it gets overridden
+    # by Envoy. Therefor we need to make sure the modified platforms repo is in Envoy's Bazel build.
+    platforms = dict(
+        project_name = "platforms",
+        project_desc = "Constraint values for specifying platforms and toolchains",
+        project_url = "https://github.com/bazelbuild/bazel-toolchains",
+        version = "e2b0fddbd5f841432740a0029751168c054db622",
+        sha256 = "0333ae8fb930af48095b399f23fbd0e1994c23aa330793f804823295ca343b9e",
+        strip_prefix = "platforms-{version}",
+        urls = [
+            "https://github.com/siepkes/platforms/archive/{version}.tar.gz",
+        ],
+        release_date = "2021-11-30",
+        use_category = ["build"],
+    ),    
     build_bazel_rules_apple = dict(
         project_name = "Apple Rules for Bazel",
         project_desc = "Bazel rules for Apple platforms",
@@ -81,13 +98,15 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         # 3. Find a commit in BoringSSL's "master-with-bazel" branch that merges <boringssl_revision>.
         #
         # chromium-100.0.4896.30 (linux/beta)
-        version = "cacb5526268191ab52e3a8b2d71f686115776646",
-        sha256 = "fd72798ee22beb9f052d792d6c701d3ea94183c2e5b94e737866a53152b46f41",
+        version = "bac527fa9d0f53ec099891c2981580cd0d479c30",
+        sha256 = "9da97beb995fabe5018acb87a8c68d2a833b33a175a917d826faac98b8ac9314",
         strip_prefix = "boringssl-{version}",
-        urls = ["https://github.com/google/boringssl/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/boringssl/archive/{version}.tar.gz"],
         use_category = ["controlplane", "dataplane_core"],
         release_date = "2022-02-08",
         cpe = "cpe:2.3:a:google:boringssl:*",
+        #patch_args = ["-p1"],
+        #patches = ["@envoy//bazel:illumos-boringssl.patch"],
     ),
     boringssl_fips = dict(
         project_name = "BoringSSL (FIPS)",
@@ -104,10 +123,10 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Abseil",
         project_desc = "Open source collection of C++ libraries drawn from the most fundamental pieces of Google’s internal codebase",
         project_url = "https://abseil.io/",
-        version = "6f43f5bb398b6685575b36874e36cf1695734df1",
-        sha256 = "5ca73792af71ab962ee81cdf575f79480704b8fb87e16ca8f1dc1e9b6822611e",
+        version = "022ad185bd1c593c30016a1133a2ec8bbb504b0b",
+        sha256 = "7f5d03194db24eed29b852573de44354a9e6cb7f1c13ebf1f01bcf2566181ac4",
         strip_prefix = "abseil-cpp-{version}",
-        urls = ["https://github.com/abseil/abseil-cpp/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/abseil-cpp/archive/{version}.tar.gz"],
         use_category = ["dataplane_core", "controlplane"],
         release_date = "2022-04-04",
         cpe = "N/A",
@@ -278,10 +297,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "gRPC",
         project_desc = "gRPC C core library",
         project_url = "https://grpc.io",
-        version = "a3ae8e00a2c5553c806e83fae83e33f0198913f0",
-        sha256 = "1ccc2056b68b81ada8df61310e03dfa0541c34821fd711654d0590a7321db9c8",
+        # Forked version of 'a3ae8e00a2c5553c806e83fae83e33f0198913f0' with Illumos support.
+        version = "f6b659378fd431ddcbe26c88a5421d2cb5129356",
+        sha256 = "6fc6c708c44316fcc2a2be85d100e3897c9d6a4dbf1bc04e988a1ff1abf69ab3",
         strip_prefix = "grpc-{version}",
-        urls = ["https://github.com/grpc/grpc/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/grpc/archive/{version}.tar.gz"],
         use_category = ["dataplane_core", "controlplane"],
         release_date = "2021-06-07",
         cpe = "cpe:2.3:a:grpc:grpc:*",
@@ -669,16 +689,20 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Protocol Buffers",
         project_desc = "Language-neutral, platform-neutral extensible mechanism for serializing structured data",
         project_url = "https://developers.google.com/protocol-buffers",
-        version = "3.19.4",
+        # We need this version bump on Illumos because the orignal version (3.19.4) fails to properly convert double
+        # values in YAML/JSON config files to protobuf. For example '0.90' becomes '-6.0659880001149178e+66'.
+        # This behavior was observed when configuring the overload manager with for example the
+        # 'envoy.resource_monitors.fixed_heap' action.
+        version = "21.11",
         # When upgrading the protobuf library, please re-run
         # test/common/json:gen_excluded_unicodes to recompute the ranges
         # excluded from differential fuzzing that are populated in
         # test/common/json/json_sanitizer_test_util.cc.
-        sha256 = "ba0650be1b169d24908eeddbe6107f011d8df0da5b1a5a4449a913b10e578faf",
+        sha256 = "f045f136e61e367a9436571b6676b94e5e16631a06c864146688c3aaf7df794b",
         strip_prefix = "protobuf-{version}",
         urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{version}/protobuf-all-{version}.tar.gz"],
         use_category = ["dataplane_core", "controlplane"],
-        release_date = "2022-01-28",
+        release_date = "2022-12-08",
         cpe = "cpe:2.3:a:google:protobuf:*",
     ),
     grpc_httpjson_transcoding = dict(
@@ -698,9 +722,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Go rules for Bazel",
         project_desc = "Bazel rules for the Go language",
         project_url = "https://github.com/bazelbuild/rules_go",
-        version = "0.31.0",
-        sha256 = "f2dcd210c7095febe54b804bb1cd3a58fe8435a909db2ec04e31542631cf715c",
-        urls = ["https://github.com/bazelbuild/rules_go/releases/download/v{version}/rules_go-v{version}.zip"],
+        # Fork of 0.31.0 with Illumos added.
+        version = "86cfe63b52f1c3ea4bafff399606d12860af87d4",
+        sha256 = "f31a91c78dfbf50aa94045e285489bbcb5e84a40c8571e21b97523e837a52d96",
+        strip_prefix = "rules_go-{version}",
+        urls = ["https://github.com/siepkes/rules_go/archive/{version}.tar.gz"],
         use_category = ["build", "api"],
         release_date = "2022-03-21",
         implied_untracked_deps = [
@@ -714,9 +740,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "C++ rules for Bazel",
         project_desc = "Bazel rules for the C++ language",
         project_url = "https://github.com/bazelbuild/rules_cc",
-        version = "0.0.1",
-        sha256 = "4dccbfd22c0def164c8f47458bd50e0c7148f3d92002cdb459c2a96a68498241",
-        urls = ["https://github.com/bazelbuild/rules_cc/releases/download/{version}/rules_cc-{version}.tar.gz"],
+        # Fork of version 0.0.1 with Illumos added. 
+        version = "18b4a816bce5436073556368ddeccc3d830caaeb",
+        sha256 = "6e1db8131c07aa4b9d07ec283b08cde635f1157a9bc05c9b29dc6a6a8cd1600a",
+        strip_prefix = "rules_cc-{version}",
+        urls = ["https://github.com/siepkes/rules_cc//archive/{version}.tar.gz"],
         release_date = "2021-10-07",
         use_category = ["build"],
     ),
@@ -724,10 +752,10 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Rules for using foreign build systems in Bazel",
         project_desc = "Rules for using foreign build systems in Bazel",
         project_url = "https://github.com/bazelbuild/rules_foreign_cc",
-        version = "0.7.1",
-        sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
+        version = "0026fdab99d2ae36f1d8b5e35bf1f43a90013c2b",
+        sha256 = "3c461dd7650cd2f63e0766a9990fc7c72096f1e996cf12b127db6f08b4bcd663",
         strip_prefix = "rules_foreign_cc-{version}",
-        urls = ["https://github.com/bazelbuild/rules_foreign_cc/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/rules_foreign_cc/archive/{version}.tar.gz"],
         release_date = "2022-01-03",
         use_category = ["build", "dataplane_core", "controlplane"],
     ),
@@ -991,11 +1019,13 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "upb",
         project_desc = "A small protobuf implementation in C (gRPC dependency)",
         project_url = "https://github.com/protocolbuffers/upb",
-        version = "de76b31f9c56b28120580d53a6f8d7941fdb79eb",
-        sha256 = "487d84ce85065ff89ccde1c1ac2ea1515d2be411306e4adf1be6861dc4a4a86b",
+        # Building upb breaks the build because it pass both the '-Wall' and '-Werror' flags to GCC.
+        # However Google upb includes Google absl which generates warnings and thereby kills the build.
+        version = "231008fa571839db492b69341c724196c1f0fd3c",
+        sha256 = "f524c1ee1da46b1848a00ff805acfbc7399ac09a8831066de5f30a6e58e04d31",
         release_date = "2020-12-29",
         strip_prefix = "upb-{version}",
-        urls = ["https://github.com/protocolbuffers/upb/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/upb/archive/{version}.tar.gz"],
         use_category = ["controlplane"],
         cpe = "N/A",
     ),
