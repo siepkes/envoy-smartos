@@ -242,8 +242,8 @@ def _go_deps(skip_targets):
         external_http_archive(
             name = "io_bazel_rules_go",
             # TODO(wrowe, sunjayBhatia): remove when Windows RBE supports batch file invocation
-            patch_args = ["-p1"],
-            patches = ["@envoy//bazel:rules_go.patch"],
+#            patch_args = ["-p1"],
+#            patches = ["@envoy//bazel:rules_go.patch"],
         )
         external_http_archive("bazel_gazelle")
 
@@ -355,6 +355,7 @@ def envoy_dependencies(skip_targets = []):
     external_http_archive("bazel_toolchains")
     external_http_archive("bazel_compdb")
     external_http_archive("envoy_build_tools")
+    external_http_archive("platforms")
     _com_github_maxmind_libmaxminddb()
 
     # TODO(keith): Remove patch when we update rules_pkg
@@ -632,7 +633,7 @@ def _net_zlib():
         name = "net_zlib",
         build_file_content = BUILD_ALL_CONTENT,
         patch_args = ["-p1"],
-        patches = ["@envoy//bazel/foreign_cc:zlib.patch"],
+        patches = ["@envoy//bazel/foreign_cc:zlib.patch"]
     )
 
     native.bind(
@@ -1321,6 +1322,8 @@ def _com_github_gperftools_gperftools():
     external_http_archive(
         name = "com_github_gperftools_gperftools",
         build_file_content = BUILD_ALL_CONTENT,
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel/foreign_cc:gperftools.patch"],
     )
     native.bind(
         name = "gperftools",

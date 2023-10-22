@@ -20,7 +20,8 @@ def envoy_cc_binary(
         visibility = None,
         external_deps = [],
         repository = "",
-        stamp = 1,
+        # TODO: illumos ld doesn't support build-ld. Fix more elegantly.
+        stamp = 0,
         stamped = False,
         deps = [],
         linkopts = [],
@@ -46,7 +47,8 @@ def envoy_cc_binary(
         linkstatic = 1,
         visibility = visibility,
         malloc = tcmalloc_external_dep(repository),
-        stamp = stamp,
+        # FIXME: Solaris ld doesn't support build-ld. Fix more elegantly.
+        stamp = 0,
         deps = deps,
         tags = tags,
         features = features,
@@ -74,18 +76,31 @@ def _envoy_linkopts():
             "-DEFAULTLIB:shell32.lib",
             "-WX",
         ],
+        "@envoy//bazel:illumos": [
+            "-pthread",
+            "-lrt",
+            "-ldl",
+            # The 'relro'flag is not supported by the illumos linker.
+            "-Wl,-z,now",
+        ],
         "//conditions:default": [
             "-pthread",
             "-lrt",
             "-ldl",
-            "-Wl,-z,relro,-z,now",
-            "-Wl,--hash-style=gnu",
+    	    # The 'relro'flag is not supported by the illumos linker.
+            "-Wl,-z,now",
+            # FIXME: GNU LD supports this option but the illumos linker doesn't.
+            #'-Wl,--hash-style=gnu',
         ],
     }) + select({
         "@envoy//bazel:apple": [],
         "@envoy//bazel:boringssl_fips": [],
         "@envoy//bazel:windows_x86_64": [],
-        "//conditions:default": ["-pie"],
+        # GCC on illumos doesn't support position independent executables ('-pie')?
+        "@envoy//bazel:illumos": [],
+        # FIXME: GCC on illumos doesn't support position independent executables?
+        # "//conditions:default": ["-pie"],
+        "//conditions:default": [],
     }) + envoy_select_exported_symbols(["-Wl,-E"])
 
 def _envoy_stamped_deps():
@@ -106,6 +121,8 @@ def _envoy_stamped_linkopts():
         # /usr/bin/ld.gold: internal error in write_build_id, at ../../gold/layout.cc:5419
         "@envoy//bazel:coverage_build": [],
         "@envoy//bazel:windows_x86_64": [],
+        # illumos ld doesn't support build-ld. Fix more elegantly.
+        "@envoy//bazel:illumos": [],
 
         # macOS doesn't have an official equivalent to the `.note.gnu.build-id`
         # ELF section, so just stuff the raw ID into a new text section.
@@ -116,6 +133,7 @@ def _envoy_stamped_linkopts():
 
         # Note: assumes GNU GCC (or compatible) handling of `--build-id` flag.
         "//conditions:default": [
-            "-Wl,@$(location @envoy//bazel:gnu_build_id.ldscript)",
+            # TODO: Ilumos ld doesn't support build-ld. Fix more elegantly.
+            # "-Wl,@$(location @envoy//bazel:gnu_build_id.ldscript)",
         ],
     })
