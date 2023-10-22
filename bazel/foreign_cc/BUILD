@@ -30,10 +30,15 @@ envoy_cc_library(
 # TODO: Consider our own gperftools.BUILD file as we do with many other packages
 configure_make(
     name = "gperftools_build",
+    # Additional flags needed so 'libtcmalloc_and_profiler.a' gets created.
     configure_options = [
         "--enable-shared=no",
         "--enable-frame-pointers",
         "--disable-libunwind",
+        "--enable-cpu-profiler",
+        "--enable-heap-profiler",
+        "--enable-heap-checker",
+        "--enable-debugalloc",
     ] + select({
         "//bazel:apple": ["AR=/usr/bin/ar"],
         "//conditions:default": [],

@@ -18,7 +18,7 @@ load("@com_google_cel_cpp//bazel:deps.bzl", "parser_deps")
 load("@com_github_chrusty_protoc_gen_jsonschema//:deps.bzl", protoc_gen_jsonschema_go_dependencies = "go_dependencies")
 
 # go version for rules_go
-GO_VERSION = "1.20"
+GO_VERSION = "1.19"
 
 JQ_VERSION = "1.6"
 YQ_VERSION = "4.24.4"
@@ -26,7 +26,10 @@ YQ_VERSION = "4.24.4"
 def envoy_dependency_imports(go_version = GO_VERSION, jq_version = JQ_VERSION, yq_version = YQ_VERSION):
     rules_foreign_cc_dependencies()
     go_rules_dependencies()
-    go_register_toolchains(go_version)
+    # Using 'host' makes Bazel use the go installation on our host. This
+    # is needed because the 'io_bazel_rules_go' tries to download a GO
+    # installation. However it can't download one for illumos / Solaris.
+    go_register_toolchains(go_version = "host")
     envoy_download_go_sdks(go_version)
     gazelle_dependencies(go_sdk = "go_sdk")
     apple_rules_dependencies()

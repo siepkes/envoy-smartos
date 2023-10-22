@@ -1,0 +1,31 @@
+From 9a84657061207c1bb8e978e31042443c37520a54 Mon Sep 17 00:00:00 2001
+From: Jasper Siepkes <siepkes@serviceplanet.nl>
+Date: Sun, 11 Jul 2021 10:12:21 +0200
+Subject: [PATCH] Added illumos / Solaris support.
+
+---
+ internal/go_repository_cache.bzl | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/internal/go_repository_cache.bzl b/internal/go_repository_cache.bzl
+index 5f01ccc..73546e9 100644
+--- a/internal/go_repository_cache.bzl
++++ b/internal/go_repository_cache.bzl
+@@ -133,6 +133,14 @@ def _detect_host_platform(ctx):
+         host = "windows_amd64"
+     elif ctx.os.name == "freebsd":
+         host = "freebsd_amd64"
++    elif ctx.os.name == "solaris" or ctx.os.name == "sunos":
++        res = ctx.execute(["uname", "-o"])
++        if res.return_code == 0:
++            uname = res.stdout.strip()
++            if uname == "illumos":
++                host = "illumos_amd64"
++            else:
++                host = "solaris_amd64"        
+     else:
+         fail("Unsupported operating system: " + ctx.os.name)
+ 
+-- 
+2.36.1
+
