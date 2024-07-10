@@ -17,8 +17,9 @@ build --color=yes
 build --jobs=HOST_CPUS-1
 build --workspace_status_command="bash bazel/get_workspace_status"
 build --incompatible_strict_action_env
-build --java_runtime_version=remotejdk_11
-build --tool_java_runtime_version=remotejdk_11
+# On illumos we need to use the OpenJDK version installed locally.
+#build --java_runtime_version=remotejdk_11
+#build --tool_java_runtime_version=remotejdk_11
 build --platform_mappings=bazel/platform_mappings
 # silence absl logspam.
 build --copt=-DABSL_MIN_LOG_LEVEL=4
@@ -548,3 +549,23 @@ common:debug --config=debug-tests
 try-import %workspace%/clang.bazelrc
 try-import %workspace%/user.bazelrc
 try-import %workspace%/local_tsan.bazelrc
+
+# Illumos
+build:illumos --cxxopt=-std=c++17
+build:illumos --define hot_restart=disabled
+build:illumos --define wasm=disabled
+# Disables gperftools. I (@siepkes) couldn't get 'libtcmalloc_and_profiler.a' to be built.
+# Not because it doesn't build on illumos but because I couldn't get Bazel -> foreign_cc
+# -> autoconf to build the thing. And then Bazel complains about not finding it.
+# When building the "vanilla" gperftools repo the 'libtcmalloc_and_profiler.a' artifact
+# is build just fine.
+build:illumos --define tcmalloc=disabled
+# The DataDog extension pulls in Google Abseil, which enables `-Werror` (i.e. treat warnings as errors).
+# When using GCC 12 on illumos this fails to build.
+build:illumos --@envoy//source/extensions/tracers/datadog:enabled=false
+
+build:illumos --java_runtime_version=local_jdk
+build:illumos --java_language_version=11
+build:illumos --tool_java_runtime_version=local_jdk
+build:illumos --tool_java_language_version=11
+build:illumos --extra_toolchains=//:repository_default_toolchain_definition
