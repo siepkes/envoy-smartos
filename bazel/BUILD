@@ -582,6 +582,11 @@ config_setting(
     values = {"cpu": "x64_windows"},
 )
 
+config_setting(
+    name = "illumos",
+    values = {"cpu": "x86_64"},
+)
+
 # Configuration settings to make doing selects for Apple vs non-Apple platforms
 # easier. More details: https://docs.bazel.build/versions/master/configurable-attributes.html#config_settingaliasing
 config_setting(
@@ -757,6 +762,7 @@ selects.config_setting_group(
         ":ios_x86_64",
         ":linux_x86_64",
         ":windows_x86_64",
+        ":illumos",
     ],
 )
 
