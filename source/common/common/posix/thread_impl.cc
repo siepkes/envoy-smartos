@@ -16,12 +16,14 @@ namespace Thread {
 namespace {
 
 int64_t getCurrentThreadId() {
-#ifdef __linux__
+#if defined(__linux__)
   return static_cast<int64_t>(syscall(SYS_gettid));
 #elif defined(__APPLE__)
   uint64_t tid;
   pthread_threadid_np(nullptr, &tid);
   return tid;
+#elif defined(__sun) || defined(__illumos__)
+  return static_cast<int64_t>(pthread_self());
 #else
 #error "Enable and test pthread id retrieval code for you arch in pthread/thread_impl.cc"
 #endif
@@ -106,6 +108,8 @@ ThreadId PosixThread::pthreadId() const {
   uint64_t tid;
   pthread_threadid_np(thread_handle_->handle(), &tid);
   return ThreadId(tid);
+#elif defined(__sun) || defined(__illumos__)
+  return ThreadId(static_cast<int64_t>(thread_handle_->handle()));
 #else
 #error "Enable and test pthread id retrieval code for you arch in pthread/thread_impl.cc"
 #endif
@@ -162,6 +166,8 @@ public:
     uint64_t tid;
     pthread_threadid_np(pthread_self(), &tid);
     return ThreadId(tid);
+#elif defined(__sun) || defined(__illumos__)
+    return ThreadId(static_cast<int64_t>(pthread_self()));
 #else
 #error "Enable and test pthread id retrieval code for you arch in pthread/thread_impl.cc"
 #endif

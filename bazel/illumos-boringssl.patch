@@ -1,0 +1,99 @@
+From 43f3f05f38dcf0e1b70bdad198b493c4a436de8b Mon Sep 17 00:00:00 2001
+From: Jasper Siepkes <siepkes@serviceplanet.nl>
+Date: Wed, 7 Dec 2022 17:02:04 +0100
+Subject: [PATCH] Added illumos / SmartOS support.
+
+Also includes the changes from the 'boringssl_static.patch' of Envoy.
+---
+ BUILD                        | 24 +++++++++++++++++++++++-
+ src/include/openssl/thread.h |  2 +-
+ 2 files changed, 24 insertions(+), 2 deletions(-)
+
+diff --git a/BUILD b/BUILD
+index cfa695a44..d8ff5ca04 100644
+--- a/BUILD
++++ b/BUILD
+@@ -75,6 +75,11 @@ config_setting(
+     ],
+ )
+ 
++config_setting(
++    name = "illumos_x86_64",
++    values = {"cpu": "illumos"},
++)
++
+ posix_copts = [
+     # Assembler option --noexecstack adds .note.GNU-stack to each object to
+     # ensure that binaries can be built with non-executable stack.
+@@ -98,9 +103,20 @@ linux_copts = posix_copts + [
+     "-D_XOPEN_SOURCE=700",
+ ]
+ 
++illumos_copts = posix_copts + [
++    "-D_XOPEN_SOURCE=600",
++    "-D__EXTENSIONS__",
++
++    # There is no assmebly code for Solaris in BoringSSL. While this is a
++    # performance hit it seems gRPC has it disabled by default as well:
++    # https://github.com/grpc/grpc/issues/9440
++    "-DOPENSSL_NO_ASM",	
++]
++
+ boringssl_copts = select({
+     "@platforms//os:linux": linux_copts,
+-    "@platforms//os:macos": posix_copts,
++    "@platforms//os:macos": illumos_copts,
++    "@platforms//os:illumos": posix_copts,
+     "@platforms//os:windows": ["-DWIN32_LEAN_AND_MEAN"],
+     "//conditions:default": [],
+ })
+@@ -134,6 +150,7 @@ posix_copts_c11 = [
+ boringssl_copts_c11 = boringssl_copts + select({
+     "@platforms//os:linux": posix_copts_c11,
+     "@platforms//os:macos": posix_copts_c11,
++    "@platforms//os:illumos": posix_copts_c11,
+     "//conditions:default": [],
+ })
+ 
+@@ -146,6 +163,7 @@ posix_copts_cxx = [
+ boringssl_copts_cxx = boringssl_copts + select({
+     "@platforms//os:linux": posix_copts_cxx,
+     "@platforms//os:macos": posix_copts_cxx,
++    "@platforms//os:illumos": posix_copts_cxx,
+     "//conditions:default": [],
+ })
+ 
+@@ -163,6 +181,8 @@ cc_library(
+         "@platforms//os:windows": ["-defaultlib:advapi32.lib"],
+         "//conditions:default": ["-lpthread"],
+     }),
++    # Imported from 'boringssl_static.patch'
++    linkstatic = True,
+     visibility = ["//visibility:public"],
+ )
+ 
+@@ -171,6 +191,8 @@ cc_library(
+     srcs = ssl_sources + ssl_internal_headers,
+     hdrs = ssl_headers,
+     copts = boringssl_copts_cxx,
++    # Imported from 'boringssl_static.patch'
++    linkstatic = True,
+     includes = ["src/include"],
+     visibility = ["//visibility:public"],
+     deps = [
+diff --git a/src/include/openssl/thread.h b/src/include/openssl/thread.h
+index 91706fec2..c5a69c42f 100644
+--- a/src/include/openssl/thread.h
++++ b/src/include/openssl/thread.h
+@@ -77,7 +77,7 @@ typedef struct crypto_mutex_st {
+ typedef union crypto_mutex_st {
+   void *handle;
+ } CRYPTO_MUTEX;
+-#elif defined(__MACH__) && defined(__APPLE__)
++#elif defined(__MACH__) && defined(__APPLE__) || defined(__illumos__)
+ typedef pthread_rwlock_t CRYPTO_MUTEX;
+ #else
+ // It is reasonable to include pthread.h on non-Windows systems, however the
+-- 
+2.38.1
+
