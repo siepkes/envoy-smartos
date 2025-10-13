@@ -46,9 +46,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Gazelle",
         project_desc = "Bazel BUILD file generator for Go projects",
         project_url = "https://github.com/bazelbuild/bazel-gazelle",
-        version = "0.37.0",
-        sha256 = "d76bf7a60fd8b050444090dfa2837a4eaf9829e1165618ee35dceca5cbdf58d5",
-        urls = ["https://github.com/bazelbuild/bazel-gazelle/releases/download/v{version}/bazel-gazelle-v{version}.tar.gz"],
+        # Fork of version 0.37.0 with illumos support added.
+        version = "99f44586ed35bc8c3338e46bd1ef4249bb6350e0",
+        sha256 = "4ee304f016443a3bc623e43993d146ebce483226726f8cedce875ff84ac8a5da",
+        strip_prefix = "bazel-gazelle-{version}",
+        urls = ["https://github.com/siepkes/bazel-gazelle/archive/{version}.tar.gz"],
         release_date = "2024-05-24",
         use_category = ["build"],
         license = "Apache-2.0",
@@ -134,10 +136,10 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         # 2. In the info for that release, open the "Branch Base Commit" link, then open DEPS, and use the <boringssl_revision>.
         #
         # chromium-126.0.6478.55 (linux/stable)
-        version = "2db0eb3f96a5756298dcd7f9319e56a98585bd10",
-        sha256 = "cd240bf27450f75cd5f41c512a06297c00646cdbac9f87b604e9312771db15a6",
+        version = "1d145c3e647497ac96647fb0b0550a3d773f3849",
+        sha256 = "2ed8e5da1e39e60a86c3f1b271cac1d9c20db9d9b3ac7401b67b19295bcd4653",
         strip_prefix = "boringssl-{version}",
-        urls = ["https://github.com/google/boringssl/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/boringssl/archive/{version}.tar.gz"],
         use_category = ["controlplane", "dataplane_core"],
         release_date = "2024-04-29",
         cpe = "cpe:2.3:a:google:boringssl:*",
@@ -175,10 +177,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Abseil",
         project_desc = "Open source collection of C++ libraries drawn from the most fundamental pieces of Google’s internal codebase",
         project_url = "https://abseil.io/",
-        version = "20230802.1",
-        sha256 = "987ce98f02eefbaf930d6e38ab16aa05737234d7afbab2d5c4ea7adbe50c28ed",
+        # Fork of version 20230802.1 with illumos compatibility added.
+        version = "2aa06d2a9a540c1a9da8590d307f01af72cbd8b6",
+        sha256 = "6e9effdfb977edaf3eec52992449fa3f41a9e3597530313b10e556be6977beff",
         strip_prefix = "abseil-cpp-{version}",
-        urls = ["https://github.com/abseil/abseil-cpp/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/abseil-cpp/archive/{version}.tar.gz"],
         use_category = ["dataplane_core", "controlplane"],
         release_date = "2023-09-18",
         cpe = "N/A",
@@ -389,10 +392,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "gRPC",
         project_desc = "gRPC C core library",
         project_url = "https://grpc.io",
-        version = "1.62.1",
-        sha256 = "c9f9ae6e4d6f40464ee9958be4068087881ed6aa37e30d0e64d40ed7be39dd01",
+        # Forked version of 1.62.1 with illumos support.
+        version = "52c799dc77690325dcc460d4bf70743a5748a311",
+        sha256 = "e393bb1c09f25c6056ee6751d6794bca29d8c42f82f5726800d18c9c93b03bfb",
         strip_prefix = "grpc-{version}",
-        urls = ["https://github.com/grpc/grpc/archive/v{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/grpc/archive/{version}.tar.gz"],
         use_category = ["dataplane_core", "controlplane"],
         release_date = "2024-03-08",
         cpe = "cpe:2.3:a:grpc:grpc:*",
@@ -942,14 +946,15 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Protocol Buffers",
         project_desc = "Language-neutral, platform-neutral extensible mechanism for serializing structured data",
         project_url = "https://developers.google.com/protocol-buffers",
-        version = PROTOBUF_VERSION,
+        # Normally this is set to 'PROTOBUF_VERSION'. This is a Forked version of 26.1 with illumos changes.
+        version = "86216b73aa66a1f6de1e6aea402f26bf911408ea",
         # When upgrading the protobuf library, please re-run
         # test/common/json:gen_excluded_unicodes to recompute the ranges
         # excluded from differential fuzzing that are populated in
         # test/common/json/json_sanitizer_test_util.cc.
-        sha256 = "4fc5ff1b2c339fb86cd3a25f0b5311478ab081e65ad258c6789359cd84d421f8",
+        sha256 = "89a10c6a85bce636d4e3d26b90fa73d1eab727414924d8a196b1a8a25c8cf813",
         strip_prefix = "protobuf-{version}",
-        urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{version}/protobuf-{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/protobuf/archive/{version}.tar.gz"],
         use_category = ["dataplane_core", "controlplane"],
         release_date = "2024-03-27",
         cpe = "cpe:2.3:a:google:protobuf:*",
@@ -1020,9 +1025,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Go rules for Bazel",
         project_desc = "Bazel rules for the Go language",
         project_url = "https://github.com/bazelbuild/rules_go",
-        version = "0.46.0",
-        sha256 = "80a98277ad1311dacd837f9b16db62887702e9f1d1c4c9f796d0121a46c8e184",
-        urls = ["https://github.com/bazelbuild/rules_go/releases/download/v{version}/rules_go-v{version}.zip"],
+        # Fork of 0.46.0 with illumos support added.
+        version = "5f719c3928634194971a55fb934a0a35745cfc56",
+        sha256 = "34c5a6c5f3c96f4092362da40b9a6be87f156f54353e70ba6ee5b9025b836925",
+        strip_prefix = "rules_go-{version}",
+        urls = ["https://github.com/siepkes/rules_go/archive/{version}.tar.gz"],
         use_category = ["build", "api"],
         release_date = "2024-02-10",
         implied_untracked_deps = [
@@ -1038,10 +1045,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
         project_name = "Rules for using foreign build systems in Bazel",
         project_desc = "Rules for using foreign build systems in Bazel",
         project_url = "https://github.com/bazelbuild/rules_foreign_cc",
-        version = "0.12.0",
-        sha256 = "a2e6fb56e649c1ee79703e99aa0c9d13c6cc53c8d7a0cbb8797ab2888bbc99a3",
+        # Fork of version 0.12.0 with illumos support.
+        version = "e26d9436bcf27283ccfb7f5090a8b1443438c96d",
+        sha256 = "e1377d006ed7c0860c8da03a52bd6e2dcfdee3a4c6bc89b4bd0703398aaf59d7",
         strip_prefix = "rules_foreign_cc-{version}",
-        urls = ["https://github.com/bazelbuild/rules_foreign_cc/archive/{version}.tar.gz"],
+        urls = ["https://github.com/siepkes/rules_foreign_cc/archive/{version}.tar.gz"],
         release_date = "2024-08-14",
         use_category = ["build", "dataplane_core", "controlplane"],
         license = "Apache-2.0",

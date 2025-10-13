@@ -18,7 +18,10 @@ load("@rules_rust//rust:defs.bzl", "rust_common")
 load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains", "rust_repository_set")
 
 # go version for rules_go
-GO_VERSION = "1.23.1"
+# Using 'host' makes Bazel use the go installation on our host. This
+# is needed because the 'io_bazel_rules_go' tries to download a GO
+# installation. However it can't download one for illumos / Solaris.
+GO_VERSION = "host"
 
 JQ_VERSION = "1.7"
 YQ_VERSION = "4.24.4"
