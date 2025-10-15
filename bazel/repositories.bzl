@@ -444,7 +444,7 @@ def _net_zlib():
         name = "net_zlib",
         build_file_content = BUILD_ALL_CONTENT,
         patch_args = ["-p1"],
-        patches = ["@envoy//bazel/foreign_cc:zlib.patch"],
+        patches = ["@envoy//bazel/foreign_cc:zlib.patch"]
     )
 
     # Bind for grpc.
@@ -908,6 +908,8 @@ def _com_github_gperftools_gperftools():
     external_http_archive(
         name = "com_github_gperftools_gperftools",
         build_file_content = BUILD_ALL_CONTENT,
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel/foreign_cc:gperftools.patch"],
     )
 
 def _com_github_wamr():
