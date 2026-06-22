@@ -1,0 +1,15 @@
+diff --git a/util/util.bzl b/util/util.bzl
+index 83ddff6..a366331 100644
+--- a/util/util.bzl
++++ b/util/util.bzl
+@@ -79,6 +79,10 @@ boringssl_copts_cxx = boringssl_copts_common + select({
+ # for our code or the headers we include, so configure the C version inside the
+ # library. If Bazel's C/C++ version handling improves, we may reconsider this.
+ boringssl_copts_c = boringssl_copts_common + select({
++    # This is a workaround for BoringSSL needing 'getentropy()' which is in
++    # the POSIX 2024 spec. Configuring '-D_XOPEN_SOURCE=800' (or in fact
++    # configuring any '-D_XOPEN_SOURCE' flag) will fail.
++    "@platforms//os:illumos": ["-std=gnu11"],
+     "@platforms//os:windows": ["/std:c11"],
+     "//conditions:default": ["-std=c11"] + gcc_copts_c,
+ })

@@ -1,0 +1,61 @@
+diff --git a/go/private/mode.bzl b/go/private/mode.bzl
+index 76ce566..c74af79 100644
+--- a/go/private/mode.bzl
++++ b/go/private/mode.bzl
+@@ -86,6 +86,7 @@ _LINK_C_ARCHIVE_PLATFORMS = {
+ _LINK_C_ARCHIVE_GOOS = {
+     "dragonfly": None,
+     "freebsd": None,
++    "illumos": None,
+     "linux": None,
+     "netbsd": None,
+     "openbsd": None,
+@@ -127,6 +128,7 @@ _LINK_PIE_PLATFORMS = {
+     "android/arm64": None,
+     "android/386": None,
+     "freebsd/amd64": None,
++    "illumos/amd64": None,
+ }
+ 
+ def _platform(mode):
+diff --git a/go/private/platforms.bzl b/go/private/platforms.bzl
+index 0a1e343..fb01106 100644
+--- a/go/private/platforms.bzl
++++ b/go/private/platforms.bzl
+@@ -21,6 +21,7 @@ BAZEL_GOOS_CONSTRAINTS = {
+     "darwin": "@platforms//os:osx",
+     "freebsd": "@platforms//os:freebsd",
+     "ios": "@platforms//os:ios",
++    "illumos": "@platforms//os:illumos",
+     "linux": "@platforms//os:linux",
+     "qnx": "@platforms//os:qnx",
+     "windows": "@platforms//os:windows",
+@@ -100,6 +101,7 @@ GOOS_GOARCH = (
+ RACE_GOOS_GOARCH = {
+     ("darwin", "amd64"): None,
+     ("freebsd", "amd64"): None,
++    ("illumos", "amd64"): None,
+     ("linux", "amd64"): None,
+     ("windows", "amd64"): None,
+ }
+diff --git a/go/private/sdk.bzl b/go/private/sdk.bzl
+index 5ec55a4..b049881 100644
+--- a/go/private/sdk.bzl
++++ b/go/private/sdk.bzl
+@@ -542,6 +542,16 @@ def detect_host_platform(ctx):
+         goarch = "arm64"
+     elif goarch == "x86_64":
+         goarch = "amd64"
++    elif ctx.os.name == "illumos":
++        goos, goarch = "illumos", "amd64"
++    elif ctx.os.name == "solaris" or ctx.os.name == "sunos":
++        res = ctx.execute(["uname", "-o"])
++        if res.return_code == 0:
++            uname = res.stdout.strip()
++            if uname == "illumos":
++                goos, goarch = "illumos", "amd64"
++            else:
++                goos, goarch = "solaris", "amd64"
+ 
+     return goos, goarch
+ 

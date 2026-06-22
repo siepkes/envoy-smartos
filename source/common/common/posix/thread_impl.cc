@@ -13,6 +13,8 @@
 #elif defined(__APPLE__)
 #include <objc/message.h>
 #include <objc/runtime.h>
+#elif defined(__sun) || defined(__illumos__)
+#include <sys/resource.h>
 #endif
 
 namespace Envoy {
@@ -27,6 +29,8 @@ int64_t getCurrentThreadIdBase() {
   uint64_t tid;
   pthread_threadid_np(nullptr, &tid);
   return tid;
+#elif defined(__sun) || defined(__illumos__)
+  return static_cast<int64_t>(pthread_self());
 #else
 #error "Enable and test pthread id retrieval code for you arch in pthread/thread_impl.cc"
 #endif
@@ -57,6 +61,15 @@ void setThreadPriority(const int64_t tid, const int priority) {
       reinterpret_cast<void (*)(id, SEL, double)>(objc_msgSend);
   double ns_priority = static_cast<double>(priority) / 100.0;
   setNSThreadPriority(current_thread, sel_registerName("setThreadPriority:"), ns_priority);
+#elif defined(__sun) || defined(__illumos__)
+  // On illumos scheduling priority is a property of the LWP. setThreadPriority() is always
+  // invoked from within the thread it is adjusting (see ThreadHandle startup below), so operate
+  // on the current LWP (who == 0). The supplied tid is a pthread_t, which is not an LWP id.
+  UNREFERENCED_PARAMETER(tid);
+  const int rc = setpriority(PRIO_LWP, 0, priority);
+  if (rc != 0) {
+    ENVOY_LOG_MISC(warn, "failed to set thread priority: {}", Envoy::errorDetails(errno));
+  }
 #else
 #error "Enable and test pthread id retrieval code for you arch in pthread/thread_impl.cc"
 #endif
@@ -144,6 +157,8 @@ ThreadId PosixThread::pthreadId() const {
   uint64_t tid;
   pthread_threadid_np(thread_handle_->handle(), &tid);
   return ThreadId(tid);
+#elif defined(__sun) || defined(__illumos__)
+  return ThreadId(static_cast<int64_t>(thread_handle_->handle()));
 #else
 #error "Enable and test pthread id retrieval code for you arch in pthread/thread_impl.cc"
 #endif
@@ -210,6 +225,9 @@ int PosixThreadFactory::currentThreadPriority() const {
       reinterpret_cast<double (*)(Class, SEL)>(objc_msgSend);
   double thread_priority = getNSThreadPriority(nsthread, selector);
   return static_cast<int>(std::round(thread_priority * 100.0));
+#elif defined(__sun) || defined(__illumos__)
+  // Query the current LWP's priority (who == 0); see setThreadPriority for the rationale.
+  return static_cast<int>(getpriority(PRIO_LWP, 0));
 #else
 #error "Enable and test pthread id retrieval code for you arch in pthread/thread_impl.cc"
 #endif
@@ -222,6 +240,8 @@ ThreadId PosixThreadFactory::currentPthreadId() const {
   uint64_t tid;
   pthread_threadid_np(pthread_self(), &tid);
   return ThreadId(tid);
+#elif defined(__sun) || defined(__illumos__)
+  return ThreadId(static_cast<int64_t>(pthread_self()));
 #else
 #error "Enable and test pthread id retrieval code for you arch in pthread/thread_impl.cc"
 #endif

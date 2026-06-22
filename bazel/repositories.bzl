@@ -106,8 +106,16 @@ def _go_deps(skip_targets):
     # Keep the skip_targets check around until Istio Proxy has stopped using
     # it to exclude the Go rules.
     if "io_bazel_rules_go" not in skip_targets:
-        external_http_archive(name = "io_bazel_rules_go")
-        external_http_archive("bazel_gazelle")
+        external_http_archive(
+            name = "io_bazel_rules_go",
+            patch_args = ["-p1"],
+            patches = ["@envoy//bazel:illumos-rules_go.patch"],
+        )
+        external_http_archive(
+            "bazel_gazelle",
+            patch_args = ["-p1"],
+            patches = ["@envoy//bazel:illumos-bazel-gazelle.patch"],
+        )
 
 def _rust_deps():
     external_http_archive(
@@ -269,6 +277,7 @@ def _boringssl():
         patch_args = ["-p1"],
         patches = [
             "@envoy//bazel:boringssl_static.patch",
+            "@envoy//bazel:illumos-boringssl.patch",
         ],
     )
 
@@ -601,7 +610,10 @@ def _com_google_googletest():
 def _com_google_absl():
     external_http_archive(
         name = "com_google_absl",
-        patches = ["@envoy//bazel:abseil.patch"],
+        patches = [
+            "@envoy//bazel:abseil.patch",
+            "@envoy//bazel:illumos-abseil.patch",
+        ],
         patch_args = ["-p1"],
     )
 
@@ -666,7 +678,10 @@ def _com_google_protobuf():
 
     external_http_archive(
         "com_google_protobuf",
-        patches = ["@envoy//bazel:protobuf.patch"],
+        patches = [
+            "@envoy//bazel:protobuf.patch",
+            "@envoy//bazel:illumos-protobuf.patch",
+        ],
         patch_args = ["-p1"],
     )
 
@@ -802,7 +817,10 @@ def _com_github_grpc_grpc():
     external_http_archive(
         name = "com_github_grpc_grpc",
         patch_args = ["-p1"],
-        patches = ["@envoy//bazel:grpc.patch"],
+        patches = [
+            "@envoy//bazel:grpc.patch",
+            "@envoy//bazel:illumos-grpc.patch",
+        ],
         # Needed until grpc updates its naming (v1.62.0)
         repo_mapping = {"@com_github_cncf_udpa": "@com_github_cncf_xds"},
     )
@@ -909,6 +927,8 @@ def _com_github_gperftools_gperftools():
     external_http_archive(
         name = "com_github_gperftools_gperftools",
         build_file_content = BUILD_ALL_CONTENT,
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel/foreign_cc:gperftools.patch"],
     )
 
 def _com_github_wamr():
@@ -1012,7 +1032,10 @@ def _rules_ruby():
 def _foreign_cc_dependencies():
     external_http_archive(
         name = "rules_foreign_cc",
-        patches = ["@envoy//bazel:rules_foreign_cc.patch"],
+        patches = [
+            "@envoy//bazel:rules_foreign_cc.patch",
+            "@envoy//bazel:illumos-rules_foreign_cc.patch",
+        ],
         patch_args = ["-p1"],
     )
 

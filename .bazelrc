@@ -19,8 +19,9 @@ build --color=yes
 build --jobs=HOST_CPUS-1
 build --workspace_status_command="bash bazel/get_workspace_status"
 build --incompatible_strict_action_env
-build --java_runtime_version=remotejdk_11
-build --tool_java_runtime_version=remotejdk_11
+# On illumos we need to use the OpenJDK version installed locally.
+#build --java_runtime_version=remotejdk_11
+#build --tool_java_runtime_version=remotejdk_11
 build --platform_mappings=bazel/platform_mappings
 # silence absl logspam.
 build --copt=-DABSL_MIN_LOG_LEVEL=4
@@ -611,3 +612,59 @@ try-import %workspace%/repo.bazelrc
 try-import %workspace%/clang.bazelrc
 try-import %workspace%/user.bazelrc
 try-import %workspace%/local_tsan.bazelrc
+
+# Illumos
+build:illumos --cxxopt=-std=c++20
+
+# GCC 13 on illumos emits a number of warnings that are clear false positives in protobuf,
+# grpc, upb, etc. They are harmless in most deps but fatal in the third-party deps that build
+# with -Werror (e.g. com_google_protoconverter). This mirrors Envoy's own //bazel:gcc config
+# (which the illumos config does not inherit, because that also forces CC/BAZEL_COMPILER and
+# cc-toolchain-resolution settings that would disturb the auto-detected illumos toolchain),
+# plus the extra GCC 13 warnings observed on illumos.
+build:illumos --cxxopt=-Wno-unknown-warning
+build:illumos --cxxopt=-Wno-missing-requires
+build:illumos --copt=-Wno-error=attributes
+build:illumos --copt=-Wno-error=restrict
+build:illumos --copt=-Wno-error=uninitialized
+build:illumos --copt=-Wno-error=maybe-uninitialized
+build:illumos --copt=-Wno-error=dangling-pointer
+build:illumos --copt=-Wno-error=sign-compare
+build:illumos --copt=-Wno-error=char-subscripts
+
+# illumos keeps the socket / network / name-service APIs in separate libraries
+# rather than in libc: libsocket (socket/bind/connect/getaddrinfo/in6addr_*/
+# if_*/getservbyname/...), libxnet (the X/Open __xnet_* socket variants that grpc
+# compiles against) and libnsl. They are added here, unconditionally for the
+# illumos config, rather than via the @envoy//bazel:illumos linkopts branch in
+# bazel/envoy_binary.bzl: that branch is gated by config_setting(values={"cpu":
+# ...}) (bazel/BUILD), but on the bazel-smartos toolchain the target --cpu is not
+# the string that config_setting tests (the build output tree is named "illumos"
+# but the legacy --cpu flag differs), so that select never fires. --linkopt
+# applies regardless and lands after the static archives on the link line, which
+# is the order the single-pass illumos ld needs.
+build:illumos --linkopt=-lsocket
+build:illumos --linkopt=-lnsl
+build:illumos --linkopt=-lxnet
+
+build:illumos --define hot_restart=disabled
+build:illumos --define wasm=disabled
+# Disables gperftools. I (@siepkes) couldn't get 'libtcmalloc_and_profiler.a' to be built.
+# Not because it doesn't build on illumos but because I couldn't get Bazel -> foreign_cc
+# -> autoconf to build the thing. And then Bazel complains about not finding it.
+# When building the "vanilla" gperftools repo the 'libtcmalloc_and_profiler.a' artifact
+# is build just fine.
+build:illumos --define tcmalloc=disabled
+# The DataDog extension pulls in Google Abseil, which enables `-Werror` (i.e. treat warnings as errors).
+# When using GCC 12 on illumos this fails to build.
+build:illumos --@envoy//source/extensions/tracers/datadog:enabled=false
+# Disabled because this requires rules_rust, which does not have illumos support.
+# Adding illumos support will require work because we will have to bootstrap Bazel's
+# crate_universe for illumos.
+build:illumos --@envoy//source/extensions/dynamic_modules:enabled=false
+
+build:illumos --java_runtime_version=local_jdk
+build:illumos --java_language_version=11
+build:illumos --tool_java_runtime_version=local_jdk
+build:illumos --tool_java_language_version=11
+build:illumos --extra_toolchains=//:repository_default_toolchain_definition

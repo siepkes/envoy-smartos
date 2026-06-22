@@ -20,7 +20,10 @@ load("@rules_rust//rust:defs.bzl", "rust_common")
 load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains", "rust_repository_set")
 
 # go version for rules_go
-GO_VERSION = "1.24.6"
+# Using 'host' makes Bazel use the go installation on our host. This
+# is needed because the 'io_bazel_rules_go' tries to download a GO
+# installation. However it can't download one for illumos / Solaris.
+GO_VERSION = "host"
 
 JQ_VERSION = "1.7"
 YQ_VERSION = "4.24.4"
@@ -46,7 +49,10 @@ def envoy_dependency_imports(go_version = GO_VERSION, jq_version = JQ_VERSION, y
         ],
         versions = [rust_common.default_version],
     )
-    rules_rust_dependencies()
+    # Disabled because this requires rules_rust, which does not have illumos support.
+    # Adding illumos support will require work because we will have to bootstrap Bazel's
+    # crate_universe for illumos.
+    #rules_rust_dependencies()
     rust_register_toolchains(
         extra_target_triples = [
             "wasm32-unknown-unknown",
@@ -54,7 +60,8 @@ def envoy_dependency_imports(go_version = GO_VERSION, jq_version = JQ_VERSION, y
         ],
     )
     crate_universe_dependencies()
-    crates_repositories()
+    # See 'rules_rust_dependencies' disable comment why this is disabled on illumos.
+    #crates_repositories()
     shellcheck_dependencies()
     proxy_wasm_rust_sdk_dependencies()
     rules_fuzzing_dependencies(
@@ -201,10 +208,11 @@ def envoy_download_go_sdks(go_version):
         version = go_version,
     )
 
-def crates_repositories():
-    crates_repository(
-        name = "dynamic_modules_rust_sdk_crate_index",
-        cargo_lockfile = "//source/extensions/dynamic_modules/sdk/rust:Cargo.lock",
-        lockfile = Label("//source/extensions/dynamic_modules/sdk/rust:Cargo.Bazel.lock"),
-        manifests = ["//source/extensions/dynamic_modules/sdk/rust:Cargo.toml"],
-    )
+# See 'rules_rust_dependencies' disable comment why this is disabled on illumos.
+#def crates_repositories():
+#    crates_repository(
+#        name = "dynamic_modules_rust_sdk_crate_index",
+#        cargo_lockfile = "//source/extensions/dynamic_modules/sdk/rust:Cargo.lock",
+#        lockfile = Label("//source/extensions/dynamic_modules/sdk/rust:Cargo.Bazel.lock"),
+#        manifests = ["//source/extensions/dynamic_modules/sdk/rust:Cargo.toml"],
+#    )

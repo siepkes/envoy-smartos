@@ -60,6 +60,8 @@ def api_dependencies():
     )
     external_http_archive(
         name = "envoy_toolshed",
+        patch_args = ["-p1"],
+        patches = ["@envoy_api//bazel:illumos-toolshed.patch"],
     )
 
 PROMETHEUSMETRICS_BUILD_CONTENT = """
