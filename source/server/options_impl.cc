@@ -167,7 +167,14 @@ OptionsImpl::OptionsImpl(std::vector<std::string> args,
                                                   false, "", "string", cmd);
 
   TCLAP::ValueArg<std::string> socket_path("", "socket-path", "Path to hot restart socket file",
-                                           false, "@envoy_domain_socket", "string", cmd);
+                                           false,
+#ifdef __sun
+                                           // illumos has no abstract socket namespace.
+                                           "/tmp/envoy_domain_socket",
+#else
+                                           "@envoy_domain_socket",
+#endif
+                                           "string", cmd);
 
   TCLAP::ValueArg<std::string> socket_mode("", "socket-mode", "Socket file permission", false,
                                            "600", "string", cmd);

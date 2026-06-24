@@ -1,0 +1,17 @@
+diff --git a/os/BUILD b/os/BUILD
+index 8e9f990..8b7bd72 100644
+--- a/os/BUILD
++++ b/os/BUILD
+@@ -33,6 +33,12 @@ constraint_value(
+     constraint_setting = ":os",
+ )
+ 
++
++constraint_value(
++    name = "illumos",
++    constraint_setting = ":os",
++)
++
+ constraint_value(
+     name = "android",
+     constraint_setting = ":os",

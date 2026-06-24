@@ -1,0 +1,73 @@
+diff --git a/lib/private/jq_toolchain.bzl b/lib/private/jq_toolchain.bzl
+index f8cd0c7..3d757e9 100644
+--- a/lib/private/jq_toolchain.bzl
++++ b/lib/private/jq_toolchain.bzl
+@@ -209,6 +209,15 @@ exports_files(["jq{ext}"])
+         ext = ext,
+     ))
+ 
++    # On illumos there is no prebuilt jq binary; use the one installed on the host
++    # (e.g. via pkgsrc). This requires `jq` to be available on PATH.
++    if repo_utils.is_illumos(rctx):
++        host_jq = rctx.which("jq")
++        if host_jq == None:
++            fail("jq was not found on PATH. On illumos/SmartOS install jq so the build can use the host binary.")
++        rctx.symlink(host_jq, "jq")
++        return
++
+     rctx.symlink("../{name}_{platform}/jq{ext}".format(
+         name = rctx.attr.name,
+         platform = repo_utils.platform(rctx),
+diff --git a/lib/private/repo_utils.bzl b/lib/private/repo_utils.bzl
+index e700c3e..e7875fc 100644
+--- a/lib/private/repo_utils.bzl
++++ b/lib/private/repo_utils.bzl
+@@ -16,6 +16,11 @@ def _is_windows(rctx):
+     """Returns true if the host operating system is Windows"""
+     return rctx.os.name.lower().find("windows") != -1
+ 
++def _is_illumos(rctx):
++    """Returns true if the host operating system is illumos / Solaris (SunOS)"""
++    name = rctx.os.name.lower()
++    return name.startswith("sunos") or name.startswith("illumos") or name.startswith("solaris")
++
+ def _os(rctx):
+     """Returns the name of the host operating system
+ 
+@@ -33,6 +38,8 @@ def _os(rctx):
+         return "freebsd"
+     if _is_windows(rctx):
+         return "windows"
++    if _is_illumos(rctx):
++        return "illumos"
+     fail("unrecognized os")
+ 
+ def _get_env_var(rctx, name, default):
+@@ -111,6 +118,7 @@ repo_utils = struct(
+     is_darwin = _is_darwin,
+     is_linux = _is_linux,
+     is_windows = _is_windows,
++    is_illumos = _is_illumos,
+     get_env_var = _get_env_var,
+     get_home_directory = _get_home_directory,
+     os = _os,
+diff --git a/lib/private/yq_toolchain.bzl b/lib/private/yq_toolchain.bzl
+index f042a8a..5a3ebcd 100644
+--- a/lib/private/yq_toolchain.bzl
++++ b/lib/private/yq_toolchain.bzl
+@@ -492,6 +492,15 @@ exports_files(["yq{ext}"])
+         ext = ext,
+     ))
+ 
++    # On illumos there is no prebuilt yq binary; use the one installed on the host
++    # (e.g. via pkgsrc). This requires `yq` to be available on PATH.
++    if repo_utils.is_illumos(rctx):
++        host_yq = rctx.which("yq")
++        if host_yq == None:
++            fail("yq was not found on PATH. On illumos/SmartOS install yq so the build can use the host binary.")
++        rctx.symlink(host_yq, "yq")
++        return
++
+     rctx.symlink("../{name}_{platform}/yq{ext}".format(
+         name = rctx.attr.name,
+         platform = repo_utils.platform(rctx),

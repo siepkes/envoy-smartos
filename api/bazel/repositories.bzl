@@ -23,6 +23,8 @@ def api_dependencies(bzlmod = False):
     )
     external_http_archive(
         name = "envoy_toolshed",
+        patch_args = ["-p1"],
+        patches = ["@envoy_api//bazel:illumos-toolshed.patch"],
     )
 
     # WORKSPACE-only dependencies (available in BCR for bzlmod or not needed)
@@ -49,6 +51,8 @@ def api_dependencies(bzlmod = False):
     )
     external_http_archive(
         name = "rules_buf",
+        patch_args = ["-p1"],
+        patches = ["@envoy_api//bazel:illumos-rules_buf.patch"],
     )
     external_http_archive(
         name = "rules_proto",

@@ -1,0 +1,67 @@
+diff --git a/absl/debugging/internal/vdso_support.cc b/absl/debugging/internal/vdso_support.cc
+index 8a588ea..1d9799f 100644
+--- a/absl/debugging/internal/vdso_support.cc
++++ b/absl/debugging/internal/vdso_support.cc
+@@ -38,7 +38,7 @@
+ #define ABSL_HAVE_GETAUXVAL
+ #endif
+ 
+-#ifdef ABSL_HAVE_GETAUXVAL
++#if defined(ABSL_HAVE_GETAUXVAL) || defined(__sun)
+ #include <sys/auxv.h>
+ #endif
+ 
+@@ -60,6 +60,9 @@ using Elf64_auxv_t = Elf64_Auxinfo;
+ #endif
+ using Elf32_auxv_t = Elf32_Auxinfo;
+ #endif
++#if defined(__sun)
++using Elf64_auxv_t = auxv_t;
++#endif
+ 
+ namespace absl {
+ ABSL_NAMESPACE_BEGIN
+diff --git a/absl/time/internal/cctz/include/cctz/civil_time_detail.h b/absl/time/internal/cctz/include/cctz/civil_time_detail.h
+index 2b0aed5..026d845 100644
+--- a/absl/time/internal/cctz/include/cctz/civil_time_detail.h
++++ b/absl/time/internal/cctz/include/cctz/civil_time_detail.h
+@@ -48,11 +48,17 @@ using diff_t = std::int_fast64_t;
+ namespace detail {
+ 
+ // Type aliases that indicate normalized argument values.
+-using month_t = std::int_fast8_t;   // [1:12]
+-using day_t = std::int_fast8_t;     // [1:31]
+-using hour_t = std::int_fast8_t;    // [0:23]
+-using minute_t = std::int_fast8_t;  // [0:59]
+-using second_t = std::int_fast8_t;  // [0:59]
++//
++// ILLUMOS FIX: Fixes build failures when using '-Werror=char-subscripts'.
++//
++// std::int_fast64_t can be negative. Since it is directly used to
++// reference positions in arrays the compiler complains about it. Making
++// the types unsigned ensure they can never be negative.
++using month_t = std::uint_fast8_t;   // [1:12]
++using day_t = std::uint_fast8_t;     // [1:31]
++using hour_t = std::uint_fast8_t;    // [0:23]
++using minute_t = std::uint_fast8_t;  // [0:59]
++using second_t = std::uint_fast8_t;  // [0:59]
+ 
+ // Normalized civil-time fields: Y-M-D HH:MM:SS.
+ struct fields {
+@@ -60,11 +66,11 @@ struct fields {
+                      minute_t minute, second_t second)
+       : y(year), m(month), d(day), hh(hour), mm(minute), ss(second) {}
+   std::int_least64_t y;
+-  std::int_least8_t m;
+-  std::int_least8_t d;
+-  std::int_least8_t hh;
+-  std::int_least8_t mm;
+-  std::int_least8_t ss;
++  std::uint_least8_t m;
++  std::uint_least8_t d;
++  std::uint_least8_t hh;
++  std::uint_least8_t mm;
++  std::uint_least8_t ss;
+ };
+ 
+ struct second_tag {};
