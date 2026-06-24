@@ -1,0 +1,24 @@
+diff --git a/include/spdlog/details/os-inl.h b/include/spdlog/details/os-inl.h
+index 92dfe12..a8b8ab7 100644
+--- a/include/spdlog/details/os-inl.h
++++ b/include/spdlog/details/os-inl.h
+@@ -260,6 +260,19 @@ SPDLOG_INLINE int utc_minutes_offset(const std::tm &tm) {
+     auto offset_seconds = utc_time_t - local_time_t;
+     return static_cast<int>(offset_seconds / 60);
+ }
++#elif defined(__sun)
++// illumos / Solaris: struct tm has no tm_gmtoff member. Derive the UTC offset using only
++// POSIX mktime/gmtime_r: interpret the broken-down time as local (mktime), render that
++// instant as UTC (gmtime_r), then re-interpret those UTC fields as local (mktime); the
++// difference is the local-to-UTC offset.
++SPDLOG_INLINE int utc_minutes_offset(const std::tm &tm) {
++    std::tm local_tm = tm;
++    std::time_t local_t = std::mktime(&local_tm);
++    std::tm utc_tm;
++    ::gmtime_r(&local_t, &utc_tm);
++    std::time_t utc_as_local_t = std::mktime(&utc_tm);
++    return static_cast<int>((local_t - utc_as_local_t) / 60);
++}
+ #else
+ // On unix simply use tm_gmtoff
+ SPDLOG_INLINE int utc_minutes_offset(const std::tm &tm) {

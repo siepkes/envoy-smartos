@@ -41,6 +41,14 @@ cargo_build_script(
                 "-isystem $${pwd}/external/sysroot_linux_arm64/usr/include/aarch64-linux-gnu",
             ]),
         },
+        # illumos: use the host (pkgsrc) clang's libclang. bindgen parses abi.h as C, so its
+        # __cplusplus branch is skipped and libclang's builtin resource dir (at
+        # <libdir>/clang/<ver>/include, auto-located relative to libclang.so) supplies
+        # stdbool/stddef/stdint -- no BINDGEN_EXTRA_CLANG_ARGS or sysroot needed. /opt/local
+        # is the pkgsrc prefix (`llvm-config --libdir` -> /opt/local/lib).
+        "@envoy//bazel:illumos": {
+            "LIBCLANG_PATH": "/opt/local/lib",
+        },
         "//conditions:default": {},
     }),
     data = [

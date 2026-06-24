@@ -195,15 +195,21 @@ public:
 // Context for determining whether we are in the test thread.
 class TestThread {
 public:
-#if TEST_THREAD_SUPPORTED
   /**
    * @return whether the current thread is the test thread.
    *
    * Use of the macros ASSERT_IS_TEST_THREAD() and ASSERT_IS_NOT_TEST_THREAD()
    * are preferred to avoid issues on platforms where detecting the test-thread
    * is not supported.
+   *
+   * On platforms without test-thread support (TEST_THREAD_SUPPORTED == 0, e.g.
+   * illumos) there is no test thread, so this returns false. Kept always-defined
+   * because production code (e.g. the dynamic_modules extensions) calls it.
    */
+#if TEST_THREAD_SUPPORTED
   static bool isTestThread();
+#else
+  static bool isTestThread() { return false; }
 #endif
 };
 
@@ -223,7 +229,6 @@ public:
   MainThread();
   ~MainThread();
 
-#if TEST_THREAD_SUPPORTED
   /**
    * @return whether the current thread is the main thread or test thread.
    *
@@ -234,9 +239,19 @@ public:
    * Use of the macros ASSERT_IS_TEST_THREAD() and ASSERT_IS_NOT_TEST_THREAD()
    * are preferred to avoid issues on platforms where detecting the test-thread
    * is not supported.
+   *
+   * On platforms without test-thread support (TEST_THREAD_SUPPORTED == 0, e.g.
+   * illumos) there is no separate test thread in a production build, so this is
+   * equivalent to isMainThread(). Kept always-defined because production code
+   * (e.g. the dynamic_modules extensions) calls it unconditionally.
    */
-  static bool isMainOrTestThread() { return isMainThread() || TestThread::isTestThread(); }
+  static bool isMainOrTestThread() {
+#if TEST_THREAD_SUPPORTED
+    return isMainThread() || TestThread::isTestThread();
+#else
+    return isMainThread();
 #endif
+  }
 
   /**
    * @return whether the current thread is the main thread.

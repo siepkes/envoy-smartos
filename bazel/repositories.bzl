@@ -131,14 +131,25 @@ def _go_deps(skip_targets):
     # Keep the skip_targets check around until Istio Proxy has stopped using
     # it to exclude the Go rules.
     if "io_bazel_rules_go" not in skip_targets:
-        external_http_archive(name = "io_bazel_rules_go")
-        external_http_archive("bazel_gazelle")
+        external_http_archive(
+            name = "io_bazel_rules_go",
+            patch_args = ["-p1"],
+            patches = ["@envoy//bazel:illumos-rules_go.patch"],
+        )
+        external_http_archive(
+            "bazel_gazelle",
+            patch_args = ["-p1"],
+            patches = ["@envoy//bazel:illumos-bazel-gazelle.patch"],
+        )
 
 def _rust_deps():
     external_http_archive(
         "rules_rust",
         patch_args = ["-p0"],
-        patches = ["@envoy//bazel:rules_rust.patch"],
+        patches = [
+            "@envoy//bazel:rules_rust.patch",
+            "@envoy//bazel:illumos-rules_rust.patch",
+        ],
     )
 
 def envoy_dependencies(skip_targets = []):
@@ -251,7 +262,11 @@ def envoy_dependencies(skip_targets = []):
         patch_args = ["-p1"],
         patches = ["@envoy//bazel:yq.patch"],
     )
-    external_http_archive("aspect_bazel_lib")
+    external_http_archive(
+        name = "aspect_bazel_lib",
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel:illumos-aspect_bazel_lib.patch"],
+    )
 
     _vpp_vcl()
 
@@ -277,6 +292,7 @@ def _boringssl():
         name = "boringssl",
         patches = [
             "@envoy//bazel:boringssl-bssl-compat.patch",
+            "@envoy//bazel:illumos-boringssl.patch",
         ],
         patch_args = ["-p1"],
     )
@@ -406,6 +422,8 @@ def _spdlog():
     external_http_archive(
         name = "spdlog",
         build_file = "@envoy//bazel/external:spdlog.BUILD",
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel:illumos-spdlog.patch"],
     )
 
 def _benchmark():
@@ -717,7 +735,10 @@ def _abseil_cpp():
     external_http_archive(
         name = "abseil-cpp",
         location_name = "abseil_cpp",
-        patches = ["@envoy//bazel:abseil.patch"],
+        patches = [
+            "@envoy//bazel:abseil.patch",
+            "@envoy//bazel:illumos-abseil.patch",
+        ],
         patch_args = ["-p1"],
     )
 
@@ -746,7 +767,10 @@ def _com_google_protobuf():
 
     external_http_archive(
         "com_google_protobuf",
-        patches = ["@envoy//bazel:protobuf.patch"],
+        patches = [
+            "@envoy//bazel:protobuf.patch",
+            "@envoy//bazel:illumos-protobuf.patch",
+        ],
         patch_args = ["-p1"],
         repo_mapping = {"@com_google_absl": "@abseil-cpp"},
     )
@@ -866,7 +890,10 @@ def _com_github_grpc_grpc():
     external_http_archive(
         name = "com_github_grpc_grpc",
         patch_args = ["-p1"],
-        patches = ["@envoy//bazel:grpc.patch"],
+        patches = [
+            "@envoy//bazel:grpc.patch",
+            "@envoy//bazel:illumos-grpc.patch",
+        ],
         repo_mapping = {
             "@com_google_absl": "@abseil-cpp",
             "@com_github_cncf_xds": "@xds",
@@ -937,6 +964,8 @@ def _tcmalloc():
 def _gperftools():
     external_http_archive(
         name = "gperftools",
+        patch_args = ["-p1"],
+        patches = ["@envoy//bazel/foreign_cc:gperftools.patch"],
     )
 
 def _jemalloc():
@@ -1041,7 +1070,10 @@ def _rules_ruby():
 def _foreign_cc_dependencies():
     external_http_archive(
         name = "rules_foreign_cc",
-        patches = ["@envoy//bazel:rules_foreign_cc.patch"],
+        patches = [
+            "@envoy//bazel:rules_foreign_cc.patch",
+            "@envoy//bazel:illumos-rules_foreign_cc.patch",
+        ],
         patch_args = ["-p1"],
     )
 

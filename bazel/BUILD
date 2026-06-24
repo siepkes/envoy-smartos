@@ -664,6 +664,19 @@ config_setting(
     values = {"cpu": "x64_windows"},
 )
 
+# On SmartOS the (bazel-smartos) Bazel reports the host/target cpu as "illumos"
+# (this is also why the build output tree is bazel-out/illumos-opt/...), NOT
+# "x86_64". The previous {"cpu": "x86_64"} therefore never matched on the real
+# build host, so every `@envoy//bazel:illumos` select silently fell through to
+# `//conditions:default` -- which is why the illumos-only linkopts (e.g. the
+# -lsocket/-lnsl/-lxnet network libs) were never applied and envoy-static failed
+# to link. Matching "illumos" also avoids wrongly matching a generic x86_64
+# (e.g. Linux) build.
+config_setting(
+    name = "illumos",
+    values = {"cpu": "illumos"},
+)
+
 # Configuration settings to make doing selects for Apple vs non-Apple platforms
 # easier. More details: https://docs.bazel.build/versions/master/configurable-attributes.html#config_settingaliasing
 config_setting(
@@ -858,6 +871,7 @@ selects.config_setting_group(
         ":ios_x86_64",
         ":linux_x86_64",
         ":windows_x86_64",
+        ":illumos",
     ],
 )
 

@@ -52,6 +52,11 @@ config_setting(
     constraint_values = ["@platforms//os:freebsd"],
 )
 
+config_setting(
+    name = "illumos",
+    constraint_values = ["@platforms//os:illumos"],
+)
+
 copy_file(
     name = "ares_config_h",
     src = select({
@@ -64,6 +69,7 @@ copy_file(
         ":android": "@envoy//bazel/external/c-ares/include/config_android:ares_config.h",
         ":openbsd": "@envoy//bazel/external/c-ares/include/config_openbsd:ares_config.h",
         ":freebsd": "@envoy//bazel/external/c-ares/include/config_freebsd:ares_config.h",
+        ":illumos": "@envoy//bazel/external/c-ares/include/config_illumos:ares_config.h",
         "//conditions:default": "@envoy//bazel/external/c-ares/include/config_linux:ares_config.h",
     }),
     out = "ares_config.h",

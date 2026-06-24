@@ -1,0 +1,18 @@
+diff --git a/packages.bzl b/packages.bzl
+index f391154..3836d95 100644
+--- a/packages.bzl
++++ b/packages.bzl
+@@ -7,7 +7,6 @@ def load_packages():
+     pip_parse(
+         name = "toolshed_pip3",
+         requirements_lock = "@envoy_toolshed//:requirements.txt",
+-        python_interpreter_target = "@python3_12_host//:python",
+     )
+     bazel_features_deps()
+ 
+@@ -15,5 +14,4 @@ def load_website_packages():
+     pip_parse(
+         name = "website_pip3",
+         requirements_lock = "@envoy_toolshed//website:requirements.txt",
+-        python_interpreter_target = "@python3_12_host//:python",
+     )

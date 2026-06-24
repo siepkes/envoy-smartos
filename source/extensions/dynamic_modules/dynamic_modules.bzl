@@ -77,6 +77,12 @@ def envoy_dynamic_module_prefix_symbols(name, module_name, archive, tags = [], *
                 "%s/bin/llvm-objcopy " % LLVM_PATH +
                 "--redefine-syms=$(location :" + redefine_syms_name + ") $$ARCH $@"
             ),
+            # illumos uses the host objcopy (binutils/llvm) -- the @toolchains_llvm
+            # LLVM toolchain has no illumos build. See bazel/illumos_objcopy.bzl.
+            "@envoy//bazel:illumos": (
+                "$(location @illumos_objcopy//:objcopy) " +
+                "--redefine-syms=$(location :" + redefine_syms_name + ") $$ARCH $@"
+            ),
             "//conditions:default": (
                 "$(location @llvm_toolchain_llvm//:objcopy) " +
                 "--redefine-syms=$(location :" + redefine_syms_name + ") $$ARCH $@"
@@ -84,6 +90,7 @@ def envoy_dynamic_module_prefix_symbols(name, module_name, archive, tags = [], *
         }),
         tools = select({
             "@envoy_repo//:use_local_llvm": [],
+            "@envoy//bazel:illumos": ["@illumos_objcopy//:objcopy"],
             "//conditions:default": ["@llvm_toolchain_llvm//:objcopy"],
         }),
         tags = tags,
