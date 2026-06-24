@@ -74,3 +74,24 @@ package_group(
 exports_files([
     "rustfmt.toml",
 ])
+
+load(
+    "@bazel_tools//tools/jdk:default_java_toolchain.bzl",
+    "BASE_JDK9_JVM_OPTS",
+    "DEFAULT_JAVACOPTS",
+    "DEFAULT_TOOLCHAIN_CONFIGURATION",
+    "default_java_toolchain",
+)
+
+# On illumos this config gets activated. We use it to force Bazel to use the local (pkgsrc) JDK. If we
+# don't it will try to use '@bazel_tools//tools/jdk:remote_jdk11'. Which won't work because there is no
+# remote illumos JDK which can be downloaded configured in the 'rules_java' project.
+default_java_toolchain(
+    name = "repository_default_toolchain",
+    configuration = DEFAULT_TOOLCHAIN_CONFIGURATION,
+    java_runtime = "@local_jdk//:jdk",
+    javacopts = DEFAULT_JAVACOPTS,
+    jvm_opts = BASE_JDK9_JVM_OPTS,
+    source_version = "11",
+    target_version = "11",
+)
