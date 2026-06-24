@@ -8,7 +8,8 @@ def envoy_copts(repository, test = False):
     posix_options = [
         "-Wall",
         "-Wextra",
-        "-Werror",
+        # TODO: Doesn't work on illumos.
+        #"-Werror",
         "-Woverloaded-virtual",
         "-Wold-style-cast",
         "-Wformat",

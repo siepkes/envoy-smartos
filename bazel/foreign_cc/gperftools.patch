@@ -1,0 +1,28 @@
+diff --git a/src/getpc.h b/src/getpc.h
+index bcbb1d1..5acfdf5 100644
+--- a/src/getpc.h
++++ b/src/getpc.h
+@@ -57,6 +57,9 @@
+ #endif
+ #if HAVE_SYS_UCONTEXT_H
+ #include <sys/ucontext.h>
++#if defined(__illumos__)
++#include <sys/regset.h>
++#endif
+ #elif HAVE_UCONTEXT_H
+ #include <ucontext.h>       // for ucontext_t (and also mcontext_t)
+ #elif defined(HAVE_CYGWIN_SIGNAL_H)
+diff --git a/src/profiler.cc b/src/profiler.cc
+index c17b991..7aa0371 100644
+--- a/src/profiler.cc
++++ b/src/profiler.cc
+@@ -46,6 +46,9 @@
+ #endif
+ #if HAVE_SYS_UCONTEXT_H
+ #include <sys/ucontext.h>
++#if defined(__illumos__)
++#include <sys/regset.h>
++#endif
+ #elif HAVE_UCONTEXT_H
+ #include <ucontext.h>
+ #elif defined(HAVE_CYGWIN_SIGNAL_H)

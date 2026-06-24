@@ -1,0 +1,42 @@
+diff --git a/buf/internal/toolchain.bzl b/buf/internal/toolchain.bzl
+index 15e691c..c37c142 100644
+--- a/buf/internal/toolchain.bzl
++++ b/buf/internal/toolchain.bzl
+@@ -119,6 +119,37 @@ def _buf_download_releases_impl(ctx):
+     major_version = int(version_number[0])
+     minor_version = int(version_number[1])
+     os, cpu = _detect_host_platform(ctx)
++
++    # illumos / SmartOS / Solaris: buf publishes no prebuilt binaries for this platform,
++    # and buf is not needed to build the Envoy binary (only the api_proto breaking-change
++    # and lint tooling uses these toolchains). Resolve the toolchain to host-installed
++    # binaries when they are on PATH, otherwise to stubs that fail with a clear message if
++    # ever invoked, so the rest of the build can proceed.
++    if os in ["sunos", "illumos", "solaris"]:
++        os = "illumos"
++        cpu = "x86_64"
++        ctx.file("WORKSPACE", "workspace(name = \"{name}\")".format(name = ctx.name))
++        ctx.file("toolchain.bzl", _TOOLCHAIN_FILE)
++        for cmd in ["buf", "protoc-gen-buf-lint", "protoc-gen-buf-breaking"]:
++            host_bin = ctx.which(cmd)
++            if host_bin:
++                ctx.symlink(host_bin, cmd)
++            else:
++                ctx.file(
++                    cmd,
++                    "#!/usr/bin/env bash\necho \"" + cmd + " is not available on illumos in this Envoy port\" >&2\nexit 1\n",
++                    executable = True,
++                )
++        ctx.file(
++            "BUILD",
++            _BUILD_FILE.format(
++                os = os,
++                cpu = cpu,
++                rules_buf_repo_name = Label("//buf/repositories.bzl").workspace_name,
++            ),
++        )
++        return
++
+     if os not in ["linux", "darwin", "windows"] or cpu not in ["arm64", "amd64", "ppc64le", "s390x"]:
+         fail("Unsupported operating system or cpu architecture ")
+     if os == "linux" and cpu == "arm64":

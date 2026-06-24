@@ -1,0 +1,19 @@
+diff --git a/internal/go_repository_cache.bzl b/internal/go_repository_cache.bzl
+index 88caf74..500ef5a 100644
+--- a/internal/go_repository_cache.bzl
++++ b/internal/go_repository_cache.bzl
+@@ -155,6 +155,14 @@ def _detect_host_platform(ctx):
+         host = "windows_amd64"
+     elif ctx.os.name == "freebsd":
+         host = "freebsd_amd64"
++    elif ctx.os.name == "solaris" or ctx.os.name == "sunos":
++        res = ctx.execute(["uname", "-o"])
++        if res.return_code == 0:
++            uname = res.stdout.strip()
++            if uname == "illumos":
++                host = "illumos_amd64"
++            else:
++                host = "solaris_amd64"
+     else:
+         fail("Unsupported operating system: " + ctx.os.name)
+ 

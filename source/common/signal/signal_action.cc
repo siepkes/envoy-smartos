@@ -95,7 +95,7 @@ void SignalAction::removeSigHandlers() {
   }
 }
 
-#if defined(__APPLE__) && !defined(MAP_STACK)
+#if (defined(__APPLE__) || defined(__sun)) && !defined(MAP_STACK)
 #define MAP_STACK (0)
 #endif
 
