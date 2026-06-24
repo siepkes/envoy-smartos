@@ -88,6 +88,18 @@ _JDK_PLATFORMS = {
     for suffix, constraints in _JDK_PLATFORMS.items()
 ]
 
+# There is no remote JDK for illumos (SmartOS), so use the one installed on the host (pkgsrc
+# OpenJDK, found through JAVA_HOME) there. The runtime side is covered by the local_jdk
+# toolchains rules_java registers itself together with --java_runtime_version=local_jdk in the
+# illumos config of .bazelrc. The target constraint keeps this toolchain inert elsewhere.
+default_java_toolchain(
+    name = "envoy_java_toolchain_illumos",
+    java_runtime = "@local_jdk//:jdk",
+    source_version = "11",
+    target_compatible_with = ["@platforms//os:illumos"],
+    target_version = "11",
+)
+
 exports_files([
     "gen_sh_test_runner.sh",
     "sh_test_wrapper.sh",
@@ -98,7 +110,7 @@ exports_files([
     "rules_go.patch",
     "exported_symbols.txt",
     "exported_symbols_apple.txt",
-])
+] + glob(["illumos-*.patch"]))
 
 sh_library(
     name = "volatile_env",
@@ -800,6 +812,13 @@ config_setting(
     values = {"cpu": "x64_windows"},
 )
 
+# The bazel-smartos port of Bazel reports the cpu as "illumos" on illumos / SmartOS (which is
+# also why the output tree is bazel-out/illumos-opt/...), not "x86_64".
+config_setting(
+    name = "illumos",
+    values = {"cpu": "illumos"},
+)
+
 # Configuration settings to make doing selects for Apple vs non-Apple platforms
 # easier. More details: https://docs.bazel.build/versions/master/configurable-attributes.html#config_settingaliasing
 config_setting(
@@ -1000,6 +1019,7 @@ selects.config_setting_group(
         ":ios_x86_64",
         ":linux_x86_64",
         ":windows_x86_64",
+        ":illumos",
     ],
 )
 

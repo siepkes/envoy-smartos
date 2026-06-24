@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<!--
+  Runs Envoy via restarter/hot-restarter.py so that "svcadm refresh envoy" hot restarts Envoy.
+  See "Running Envoy as an SMF service" in README.md.
+-->
+<service_bundle type="manifest" name="envoy">
+  <service name="network/envoy" type="service" version="1">
+    <create_default_instance enabled="false"/>
+    <single_instance/>
+
+    <dependency name="network" grouping="require_all" restart_on="error" type="service">
+      <service_fmri value="svc:/milestone/network:default"/>
+    </dependency>
+    <dependency name="filesystem" grouping="require_all" restart_on="error" type="service">
+      <service_fmri value="svc:/system/filesystem/local"/>
+    </dependency>
+
+    <!-- net_privaddr allows binding ports below 1024. -->
+    <method_context>
+      <method_credential user="envoy" group="envoy" privileges="basic,net_privaddr"/>
+    </method_context>
+
+    <!-- hot-restarter.py stays in the foreground, so start it in the background. -->
+    <exec_method type="method" name="start" timeout_seconds="60"
+        exec="/opt/local/bin/python3.11 /opt/envoy/restarter/hot-restarter.py /opt/envoy/smf/envoy-start.sh &amp;"/>
+    <!-- A refresh method exceeding its timeout counts as failed, so be generous. -->
+    <exec_method type="method" name="refresh" timeout_seconds="600"
+        exec="/opt/envoy/smf/envoy-refresh.sh"/>
+    <!-- SIGTERM to hot-restarter.py and all Envoy epochs. -->
+    <exec_method type="method" name="stop" timeout_seconds="60" exec=":kill"/>
+
+    <property_group name="startd" type="framework">
+      <propval name="duration" type="astring" value="contract"/>
+    </property_group>
+
+    <stability value="Unstable"/>
+    <template>
+      <common_name>
+        <loctext xml:lang="C">Envoy proxy</loctext>
+      </common_name>
+    </template>
+  </service>
+</service_bundle>

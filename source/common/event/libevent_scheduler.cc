@@ -30,7 +30,19 @@ LibeventScheduler::LibeventScheduler(TimeSource& time_source) : time_source_(tim
   event_base* event_base = event_base_new_with_config(event_config);
   event_config_free(event_config);
 #else
-  event_base* event_base = event_base_new();
+  event_config* event_config = event_config_new();
+  RELEASE_ASSERT(event_config != nullptr,
+                 "Failed to initialize libevent event_base: event_config_new");
+  if constexpr (PlatformDefaultTriggerType == FileTriggerType::Edge) {
+    // Asks libevent for a backend that supports edge triggering. Event ports does not support
+    // this. Without this check, event ports will get in a tail spin on illumos and consume
+    // 100% CPU in a forever loop.
+    int error = event_config_require_features(event_config, EV_FEATURE_ET);
+    RELEASE_ASSERT(error == 0,
+                   "Failed to initialize libevent event_base: event_config_require_features");
+  }
+  event_base* event_base = event_base_new_with_config(event_config);
+  event_config_free(event_config);
 #endif
   RELEASE_ASSERT(event_base != nullptr, "Failed to initialize libevent event_base");
   libevent_ = Libevent::BasePtr(event_base);

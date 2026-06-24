@@ -1,0 +1,112 @@
+diff --git a/go/private/mode.bzl b/go/private/mode.bzl
+--- a/go/private/mode.bzl
++++ b/go/private/mode.bzl
+@@ -86,6 +86,7 @@ _LINK_C_ARCHIVE_PLATFORMS = {
+ _LINK_C_ARCHIVE_GOOS = {
+     "dragonfly": None,
+     "freebsd": None,
++    "illumos": None,
+     "linux": None,
+     "netbsd": None,
+     "openbsd": None,
+@@ -136,6 +137,7 @@ _LINK_PIE_PLATFORMS = {
+     "ios/amd64": None,
+     "ios/arm64": None,
+     "freebsd/amd64": None,
++    "illumos/amd64": None,
+ }
+ 
+ def _platform(mode):
+diff --git a/go/private/platforms.bzl b/go/private/platforms.bzl
+--- a/go/private/platforms.bzl
++++ b/go/private/platforms.bzl
+@@ -21,6 +21,7 @@ BAZEL_GOOS_CONSTRAINTS = {
+     "darwin": "@platforms//os:osx",
+     "freebsd": "@platforms//os:freebsd",
+     "ios": "@platforms//os:ios",
++    "illumos": "@platforms//os:illumos",
+     "linux": "@platforms//os:linux",
+     "qnx": "@platforms//os:qnx",
+     "windows": "@platforms//os:windows",
+@@ -103,6 +104,7 @@ GOOS_GOARCH = (
+ RACE_GOOS_GOARCH = {
+     ("darwin", "amd64"): None,
+     ("freebsd", "amd64"): None,
++    ("illumos", "amd64"): None,
+     ("linux", "amd64"): None,
+     ("windows", "amd64"): None,
+ }
+diff --git a/go/private/sdk.bzl b/go/private/sdk.bzl
+--- a/go/private/sdk.bzl
++++ b/go/private/sdk.bzl
+@@ -100,6 +100,18 @@ def _go_download_sdk_impl(ctx):
+         sdks = sdks_by_version[version]
+ 
+     if platform not in sdks:
++        if goos == "illumos":
++            # go.dev publishes no illumos binaries, so fall back to the Go SDK installed on the
++            # host (eg. pkgsrc go), exactly like go_host_sdk() does.
++            goroot = _detect_host_sdk(ctx)
++            host_platform = _detect_sdk_platform(ctx, goroot)
++            host_version = _detect_sdk_version(ctx, goroot, check_version = False)
++            if version and host_version != version:
++                # buildifier: disable=print
++                print("rules_go: using the host Go SDK {} from {} on illumos instead of Go {}".format(host_version, goroot, version))
++            _sdk_build_file(ctx, host_platform, host_version, experiments = ctx.attr.experiments)
++            _local_sdk(ctx, goroot)
++            return None
+         fail("unsupported platform {}".format(platform))
+ 
+     filename, sha256 = sdks[platform]
+@@ -132,6 +144,8 @@ def _go_download_sdk_impl(ctx):
+ 
+ go_download_sdk_rule = repository_rule(
+     implementation = _go_download_sdk_impl,
++    # Only used by the illumos host SDK fallback above.
++    environ = ["GOROOT"],
+     attrs = {
+         "goos": attr.string(),
+         "goarch": attr.string(),
+@@ -491,6 +505,16 @@ def detect_host_platform(ctx):
+     elif goarch == "loongarch64":
+         goarch = "loong64"
+ 
++    # Bazel reports illumos (SmartOS) and Solaris hosts as "sunos"; tell them apart with uname(1).
++    if goos == "illumos":
++        goarch = "amd64"
++    elif goos == "solaris" or goos == "sunos":
++        goos = "solaris"
++        res = ctx.execute(["uname", "-o"])
++        if res.return_code == 0 and res.stdout.strip() == "illumos":
++            goos = "illumos"
++        goarch = "amd64"
++
+     return goos, goarch
+ 
+ def _detect_host_sdk(ctx):
+@@ -521,14 +545,14 @@ def _detect_sdk_platform(ctx, goroot):
+         fail("Could not detect SDK platform: found multiple platforms %s in %s" % (platforms, path))
+     return platforms[0]
+ 
+-def _detect_sdk_version(ctx, goroot):
++def _detect_sdk_version(ctx, goroot, check_version = True):
+     version_file_path = goroot + "/VERSION"
+     if ctx.path(version_file_path).exists:
+         # VERSION file has version prefixed by go, eg. go1.20.3
+         # 1.21: The version is the first line
+         version_line = ctx.read(version_file_path).splitlines()[0]
+         version = version_line[2:]
+-        if ctx.attr.version and ctx.attr.version != version:
++        if check_version and ctx.attr.version and ctx.attr.version != version:
+             fail("SDK is version %s, but version %s was expected" % (version, ctx.attr.version))
+         return version
+ 
+@@ -556,7 +580,7 @@ def _detect_sdk_version(ctx, goroot):
+         fail("Could not parse SDK version from '%s version' output: %s" % (go_binary_path, result.stdout))
+     if parse_version(version) == None:
+         fail("Could not parse SDK version from '%s version' output: %s" % (go_binary_path, result.stdout))
+-    if ctx.attr.version and ctx.attr.version != version:
++    if check_version and ctx.attr.version and ctx.attr.version != version:
+         fail("SDK is version %s, but version %s was expected" % (version, ctx.attr.version))
+     return version
+ 

@@ -455,3 +455,62 @@ build:docker-tsan --config=tsan
 try-import %workspace%/clang.bazelrc
 try-import %workspace%/user.bazelrc
 try-import %workspace%/local_tsan.bazelrc
+
+#############################################################################
+# illumos / SmartOS (see README.md)
+#############################################################################
+
+# Built with the bazel-smartos port of Bazel and the pkgsrc GCC toolchain that rules_cc
+# auto-detects on illumos (bazel/illumos-rules_cc.patch).
+build:illumos --cxxopt=-std=c++20
+
+# GCC 13 on illumos emits a number of warnings that are clear false positives in protobuf,
+# grpc, upb, etc. They are harmless in most deps but fatal in the third-party deps that build
+# with -Werror (e.g. proto-converter). This mirrors Envoy's own //bazel:gcc config
+# (which the illumos config does not inherit, because that also forces CC/BAZEL_COMPILER and
+# cc-toolchain-resolution settings that would disturb the auto-detected illumos toolchain),
+# plus the extra GCC 13 warnings observed on illumos.
+build:illumos --cxxopt=-Wno-unknown-warning
+build:illumos --cxxopt=-Wno-missing-requires
+build:illumos --copt=-Wno-error=attributes
+build:illumos --copt=-Wno-error=restrict
+build:illumos --copt=-Wno-error=uninitialized
+build:illumos --copt=-Wno-error=maybe-uninitialized
+build:illumos --copt=-Wno-error=dangling-pointer
+build:illumos --copt=-Wno-error=sign-compare
+build:illumos --copt=-Wno-error=char-subscripts
+
+# illumos keeps the socket / network / name-service APIs in separate libraries
+# rather than in libc: libsocket (socket/bind/connect/getaddrinfo/in6addr_*/
+# if_*/getservbyname/...), libxnet (the X/Open __xnet_* socket variants that grpc
+# compiles against) and libnsl. envoy_cc_binary() adds them for @envoy//bazel:illumos
+# (bazel/envoy_binary.bzl), but tools and tests of third-party deps need them too, so
+# they are added here as well. --linkopt lands after the static archives on the link
+# line, which is the order the single-pass illumos ld needs.
+build:illumos --linkopt=-lsocket
+build:illumos --linkopt=-lnsl
+build:illumos --linkopt=-lxnet
+
+# None of the WASM runtimes build on illumos (see README.md), so build without one.
+build:illumos --@proxy-wasm-cpp-host//bazel:engine=disabled
+# Disables gperftools. I (@siepkes) couldn't get 'libtcmalloc_and_profiler.a' to be built.
+# Not because it doesn't build on illumos but because I couldn't get Bazel -> foreign_cc
+# -> autoconf to build the thing. And then Bazel complains about not finding it.
+# When building the "vanilla" gperftools repo the 'libtcmalloc_and_profiler.a' artifact
+# is build just fine.
+build:illumos --define tcmalloc=disabled
+# The DataDog extension pulls in Google Abseil, which enables `-Werror` (i.e. treat warnings as errors).
+# When using GCC 12 on illumos this fails to build.
+build:illumos --@envoy//source/extensions/tracers/datadog:enabled=false
+
+# There are no prebuilt cmake and ninja binaries for illumos (rules_foreign_cc only ships
+# Linux/macOS/Windows ones), so use the ones installed from pkgsrc.
+build:illumos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_cmake_toolchain
+build:illumos --extra_toolchains=@rules_foreign_cc//toolchains:preinstalled_ninja_toolchain
+# Likewise there is no hermetic (rules_python) CPython build for illumos; use the system
+# Python 3 (pkgsrc) through the runtime_env toolchain.
+build:illumos --extra_toolchains=@rules_python//python/runtime_env_toolchains:all
+# Nor a remote JDK; use the pkgsrc OpenJDK pointed to by JAVA_HOME. The matching compile
+# toolchain (//bazel:envoy_java_toolchain_illumos) is registered from MODULE.bazel.
+build:illumos --java_runtime_version=local_jdk
+build:illumos --tool_java_runtime_version=local_jdk

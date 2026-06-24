@@ -1,0 +1,28 @@
+diff --git a/src/core/lib/event_engine/posix_engine/grpc_polled_fd_posix.h b/src/core/lib/event_engine/posix_engine/grpc_polled_fd_posix.h
+--- a/src/core/lib/event_engine/posix_engine/grpc_polled_fd_posix.h
++++ b/src/core/lib/event_engine/posix_engine/grpc_polled_fd_posix.h
+@@ -32,6 +32,9 @@
+ 
+ #include <ares.h>
+ #include <sys/ioctl.h>
++#ifdef __sun
++#include <sys/filio.h>
++#endif
+ #include <sys/socket.h>
+ #include <sys/uio.h>
+ 
+diff --git a/src/core/resolver/dns/c_ares/grpc_ares_ev_driver_posix.cc b/src/core/resolver/dns/c_ares/grpc_ares_ev_driver_posix.cc
+--- a/src/core/resolver/dns/c_ares/grpc_ares_ev_driver_posix.cc
++++ b/src/core/resolver/dns/c_ares/grpc_ares_ev_driver_posix.cc
+@@ -24,6 +24,11 @@
+ // IWYU pragma: no_include <ares_build.h>
+ 
+ #include <ares.h>
++#ifdef __sun
++#include <sys/filio.h>
++#include <unistd.h>
++#include <stropts.h>
++#endif
+ #include <sys/ioctl.h>
+ #include <sys/socket.h>
+ #include <sys/uio.h>

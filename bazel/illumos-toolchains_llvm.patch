@@ -1,0 +1,29 @@
+diff --git a/toolchain/internal/common.bzl b/toolchain/internal/common.bzl
+--- a/toolchain/internal/common.bzl
++++ b/toolchain/internal/common.bzl
+@@ -153,6 +153,10 @@ def os_from_rctx(rctx):
+         return "darwin"
+     elif name.startswith("windows"):
+         return "windows"
++    elif name == "sunos":
++        # illumos (and Solaris). Only used to tell the host apart from the exec_os of the
++        # configured (Linux/macOS) toolchains; there is no LLVM distribution for it.
++        return "illumos"
+     fail("Unsupported OS: " + name)
+ 
+ def os_bzl(os):
+diff --git a/toolchain/internal/configure.bzl b/toolchain/internal/configure.bzl
+--- a/toolchain/internal/configure.bzl
++++ b/toolchain/internal/configure.bzl
+@@ -150,7 +150,10 @@ def llvm_config_impl(rctx):
+     _check_os_arch_keys(rctx.attr.stdlib)
+ 
+     os = _os(rctx)
+-    if os == "windows":
++    if os == "windows" or _os_from_rctx(rctx) == "illumos":
++        # No LLVM distribution exists for illumos; the host (pkgsrc) GCC toolchain detected by
++        # rules_cc is used instead. Produce an empty repository so that the
++        # register_toolchains("@llvm_toolchain//:all") of consumers resolves to nothing.
+         _empty_repository(rctx)
+         return None
+     arch = _arch(rctx)

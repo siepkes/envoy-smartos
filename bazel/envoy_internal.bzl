@@ -32,6 +32,7 @@ _FORCE_LIBCPP = Label("//bazel:force_libcpp")
 _GCC_BUILD = Label("//bazel:gcc_build")
 _GPERFTOOLS = Label("//bazel/external:gperftools")
 _GPERFTOOLS_TCMALLOC = Label("//bazel:gperftools_tcmalloc")
+_ILLUMOS = Label("//bazel:illumos")
 _JEMALLOC = Label("//bazel/deps:jemalloc")
 _JEMALLOC_ENABLED = Label("//bazel:jemalloc_enabled")
 _LINUX = Label("//bazel:linux")
@@ -51,7 +52,6 @@ def envoy_copts(test = False):
     posix_options = [
         "-Wall",
         "-Wextra",
-        "-Werror",
         "-Woverloaded-virtual",
         "-Wold-style-cast",
         "-Wformat",
@@ -89,6 +89,11 @@ def envoy_copts(test = False):
     return select({
                _WINDOWS_X86_64: msvc_options,
                "//conditions:default": posix_options,
+           }) + select({
+               # GCC on illumos still reports a number of warnings in Envoy itself.
+               _ILLUMOS: [],
+               _WINDOWS_X86_64: [],
+               "//conditions:default": ["-Werror"],
            }) + select({
                # Simplify the amount of symbolic debug info for test binaries, since
                # debugging info detailing some 1600 test binaries would be wasteful.

@@ -18,6 +18,7 @@ _COVERAGE_BUILD = Label("//bazel:coverage_build")
 _ENGFLOW_RBE_X86_64 = Label("//bazel:engflow_rbe_x86_64")
 _FIPS_BUILD = Label("//bazel:fips_build")
 _GNU_BUILD_ID = Label("//bazel:gnu_build_id.ldscript")
+_ILLUMOS = Label("//bazel:illumos")
 _RAW_BUILD_ID = Label("//bazel:raw_build_id.ldscript")
 _WINDOWS_OPT_BUILD = Label("//bazel:windows_opt_build")
 _WINDOWS_X86_64 = Label("//bazel:windows_x86_64")
@@ -93,6 +94,20 @@ def _envoy_linkopts():
             "-DEFAULTLIB:shell32.lib",
             "-WX",
         ],
+        _ILLUMOS: [
+            "-pthread",
+            "-lrt",
+            "-ldl",
+            # illumos keeps the socket / network / name-service APIs in separate libraries
+            # rather than libc: libsocket (socket/bind/connect/getaddrinfo/...), libxnet (the
+            # X/Open __xnet_* socket variants that grpc compiles against), and libnsl
+            # (getservbyname/getprotobynumber/...).
+            "-lsocket",
+            "-lnsl",
+            "-lxnet",
+            # The illumos ld supports neither '-z relro' nor '--hash-style'.
+            "-Wl,-z,now",
+        ],
         "//conditions:default": [
             "-pthread",
             "-lrt",
@@ -103,6 +118,8 @@ def _envoy_linkopts():
     }) + select({
         _APPLE: [],
         _FIPS_BUILD: [],
+        # GCC on illumos does not support position independent executables.
+        _ILLUMOS: [],
         _WINDOWS_X86_64: [],
         "//conditions:default": ["-pie"],
     }) + envoy_select_exported_symbols(["-Wl,-E"])
@@ -124,6 +141,8 @@ def _envoy_stamped_linkopts():
         #
         # /usr/bin/ld.gold: internal error in write_build_id, at ../../gold/layout.cc:5419
         _COVERAGE_BUILD: [],
+        # The illumos ld has no --build-id.
+        _ILLUMOS: [],
         _WINDOWS_X86_64: [],
 
         # macOS doesn't have an official equivalent to the `.note.gnu.build-id`

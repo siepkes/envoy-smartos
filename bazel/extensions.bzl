@@ -156,6 +156,51 @@ alias(
     version = _detect_llvm_version(repository_ctx, llvm_root, "", "bin/clang.exe")
     _write_llvm_bzl(repository_ctx, version, "lib", True)
 
+def _illumos_llvm_repo(repository_ctx):
+    # illumos (SmartOS): neither envoy_toolshed nor toolchains_llvm have an LLVM build for it and
+    # Envoy is compiled with the host (pkgsrc) GCC toolchain there. Only expose the parts of the
+    # host (pkgsrc) LLVM this repository is used for in the illumos build: llvm-objcopy for the
+    # dynamic_modules symbol renaming (source/extensions/dynamic_modules/dynamic_modules.bzl) and
+    # libclang for bindgen in the Rust SDK. /opt/local is the pkgsrc prefix; symlinking all of it
+    # like _host_llvm_repo does would drag the whole pkgsrc tree into this repository.
+    llvm_root = repository_ctx.path("/opt/local")
+    objcopy = None
+    for name in ["llvm-objcopy", "objcopy", "gobjcopy"]:
+        candidate = llvm_root.get_child("bin/" + name)
+        if candidate.exists:
+            objcopy = candidate
+            break
+        candidate = repository_ctx.which(name)
+        if candidate:
+            objcopy = candidate
+            break
+    if objcopy == None:
+        fail(
+            "No llvm-objcopy, objcopy or gobjcopy found in %s/bin or on PATH. Install LLVM " % llvm_root +
+            "(pkgsrc `clang`) or GNU binutils on the build host; one of them is needed to " +
+            "rename the symbols of the dynamic modules built into Envoy.",
+        )
+    repository_ctx.symlink(objcopy, "bin/llvm-objcopy")
+    libclang = llvm_root.get_child("lib/libclang.so")
+    if libclang.exists:
+        repository_ctx.symlink(libclang, "lib/libclang.so")
+    clang = llvm_root.get_child("bin/clang")
+    version = _detect_llvm_version(repository_ctx, llvm_root, "") if clang.exists else "0.0.0"
+    repository_ctx.file(
+        "BUILD.bazel",
+        """
+package(default_visibility = ["//visibility:public"])
+
+exports_files(glob(["bin/*", "lib/*"], allow_empty = True) + ["llvm.bzl"])
+
+filegroup(
+    name = "objcopy",
+    srcs = ["bin/llvm-objcopy"],
+)
+""",
+    )
+    _write_llvm_bzl(repository_ctx, version, "lib", True)
+
 def _llvm_alias_repo_impl(repository_ctx):
     os_name = repository_ctx.os.name.lower()
     arch = repository_ctx.os.arch.lower()
@@ -169,6 +214,9 @@ def _llvm_alias_repo_impl(repository_ctx):
         llvm_root = repository_ctx.path(repository_ctx.attr.minimal_macos_arm64).dirname
     elif os_name.startswith("windows"):
         _windows_llvm_repo(repository_ctx)
+        return
+    elif os_name.startswith("sunos"):
+        _illumos_llvm_repo(repository_ctx)
         return
     else:
         fail(

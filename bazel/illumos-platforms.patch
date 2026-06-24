@@ -1,0 +1,27 @@
+diff --git a/host/extension.bzl b/host/extension.bzl
+--- a/host/extension.bzl
++++ b/host/extension.bzl
+@@ -26,6 +26,8 @@ def _translate_os(os):
+         return "freebsd"
+     if os.startswith("openbsd"):
+         return "openbsd"
++    if os.startswith("sunos") or os.startswith("illumos"):
++        return "illumos"
+     if os.startswith("linux"):
+         return "linux"
+     if os.startswith("windows"):
+diff --git a/os/BUILD b/os/BUILD
+--- a/os/BUILD
++++ b/os/BUILD
+@@ -33,6 +33,11 @@ constraint_value(
+     constraint_setting = ":os",
+ )
+ 
++constraint_value(
++    name = "illumos",
++    constraint_setting = ":os",
++)
++
+ constraint_value(
+     name = "android",
+     constraint_setting = ":os",

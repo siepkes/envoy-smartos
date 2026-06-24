@@ -148,12 +148,125 @@ single_version_override(
 
 single_version_override(
     module_name = "boringssl",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-boringssl.patch"],
     version = "0.20260929.0",
 )
 
 single_version_override(
     module_name = "openssl",
     version = "3.5.9.envoy",
+)
+
+# illumos / SmartOS support for the dependencies (see README.md). The patches are applied on top
+# of the registry patches of the `.envoy` module versions. Bzlmod only allows the root module to
+# patch dependencies, which is why the rules_buf patch used by @envoy_api lives here as well.
+single_version_override(
+    module_name = "abseil-cpp",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-abseil.patch"],
+)
+
+single_version_override(
+    module_name = "aspect_bazel_lib",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-aspect_bazel_lib.patch"],
+)
+
+single_version_override(
+    module_name = "c-ares",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-c-ares.patch"],
+)
+
+single_version_override(
+    module_name = "gazelle",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-bazel-gazelle.patch"],
+)
+
+single_version_override(
+    module_name = "gperftools",
+    patch_strip = 1,
+    patches = ["//bazel/foreign_cc:gperftools.patch"],
+)
+
+single_version_override(
+    module_name = "grpc",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-grpc.patch"],
+)
+
+single_version_override(
+    module_name = "libevent",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-libevent.patch"],
+)
+
+single_version_override(
+    module_name = "luajit",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-luajit.patch"],
+)
+
+single_version_override(
+    module_name = "platforms",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-platforms.patch"],
+)
+
+single_version_override(
+    module_name = "protobuf",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-protobuf.patch"],
+)
+
+single_version_override(
+    module_name = "rules_buf",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-rules_buf.patch"],
+)
+
+single_version_override(
+    module_name = "rules_cc",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-rules_cc.patch"],
+)
+
+single_version_override(
+    module_name = "rules_foreign_cc",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-rules_foreign_cc.patch"],
+)
+
+single_version_override(
+    module_name = "rules_go",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-rules_go.patch"],
+)
+
+single_version_override(
+    module_name = "rules_python",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-rules_python.patch"],
+)
+
+single_version_override(
+    module_name = "rules_rust",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-rules_rust.patch"],
+)
+
+single_version_override(
+    module_name = "spdlog",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-spdlog.patch"],
+)
+
+single_version_override(
+    module_name = "toolchains_llvm",
+    patch_strip = 1,
+    patches = ["//bazel:illumos-toolchains_llvm.patch"],
 )
 
 # testing/debugging
@@ -295,6 +408,7 @@ use_repo(bazel_lib, "jq", "jq_toolchains", "yq", "yq_toolchains")
 java_toolchains = use_extension("@rules_java//java:extensions.bzl", "toolchains")
 use_repo(
     java_toolchains,
+    "local_jdk",
     "remotejdk25_linux",
     "remotejdk25_linux_aarch64",
     "remotejdk25_linux_ppc64le",
@@ -315,6 +429,9 @@ use_repo(java_compat, "compatibility_proxy")
 # point at concrete @remotejdk25_*//:jdk targets rather than the remotejdk_25 alias to avoid a
 # self-cycle through Java runtime toolchain resolution.
 register_toolchains(
+    # illumos (SmartOS) only; see bazel/BUILD.
+    "//bazel:envoy_java_toolchain_illumos_default_definition",
+    "//bazel:envoy_java_toolchain_illumos_definition",
     "//bazel:envoy_java_toolchain_default_definition",
     "//bazel:envoy_java_toolchain_definition",
     "//bazel:envoy_java_runtime_toolchain_linux",
@@ -410,6 +527,30 @@ rust.repository_set(
     exec_triple = "s390x-unknown-linux-gnu",
     versions = ["1.97.1"],
 )
+
+# illumos / SmartOS: rules_rust registers no toolchain for it, so register the (tier 2) host
+# tools Rust ships for x86_64-unknown-illumos ourselves. bazel/illumos-rules_rust.patch teaches
+# rules_rust the triple. The sha256s are those published next to the tarballs on
+# static.rust-lang.org; keep them in sync with the Rust version used above.
+rust.repository_set(
+    name = "rust_illumos_x86_64",
+    edition = "2018",
+    exec_triple = "x86_64-unknown-illumos",
+    sha256s = {
+        "cargo-1.97.1-x86_64-unknown-illumos.tar.xz": "6ed49feb539b004475037b33573122847abe81c29f75cda348901353bd8675c4",
+        "clippy-1.97.1-x86_64-unknown-illumos.tar.xz": "ff975279629f9c60a8fe5373d6095f2fee1dd0952237761be123c2395452c4d7",
+        "llvm-tools-1.97.1-x86_64-unknown-illumos.tar.xz": "741ceb5abb1bb761ffbefc8a4ca30a67d609b0d4ed1b879cf0f88455e4a5062c",
+        "rust-std-1.97.1-x86_64-unknown-illumos.tar.xz": "128ef8a63b873da71caafa5b1761730c1d6f524e271253bf0852a1309effa340",
+        "rustc-1.97.1-x86_64-unknown-illumos.tar.xz": "cd79bb3d49c1de196287f479d1abb5d4c0f898d309b5d64c284ae609ceb62c93",
+        "rustfmt-1.97.1-x86_64-unknown-illumos.tar.xz": "0be8a5ccc3c73a12099da05c94fb38ae6f66d21b592d046de589a22b80385abb",
+    },
+    target_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:illumos",
+    ],
+    target_triple = "x86_64-unknown-illumos",
+    versions = ["1.97.1"],
+)
 rust.toolchain(
     edition = "2018",
     extra_target_triples = [
@@ -436,6 +577,18 @@ crate.from_cargo(
     cargo_lockfile = "//:Cargo.lock",
     lockfile = "//:Cargo.Bazel.envoy.lock",
     manifests = ["//:Cargo.toml"],
+    # The rules_rust defaults plus illumos / SmartOS, so that the generated crate BUILD files get
+    # select() branches for it. Changing this list requires repinning (CARGO_BAZEL_REPIN=1).
+    supported_platform_triples = [
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "wasm32-unknown-unknown",
+        "wasm32-wasip1",
+        "x86_64-pc-windows-msvc",
+        "x86_64-unknown-illumos",
+        "x86_64-unknown-linux-gnu",
+        "x86_64-unknown-nixos-gnu",
+    ],
 )
 use_repo(crate, "envoy_rust_crate_index")
 

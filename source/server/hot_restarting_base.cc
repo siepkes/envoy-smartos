@@ -16,6 +16,30 @@ static constexpr uint64_t MaxSendmsgSize = 4096;
 static constexpr absl::Duration CONNECTION_REFUSED_RETRY_DELAY = absl::Seconds(1);
 static constexpr int SENDMSG_MAX_RETRIES = 10;
 
+#ifdef __sun
+namespace {
+
+// illumos has no abstract socket namespace, so the hot restart domain sockets are files. Those
+// outlive the process that bound them. Unconditionally unlinking the path before bind() (as done
+// on other platforms) would let a second Envoy with the same --base-id silently take over the
+// sockets of a running one, where on Linux its bind() fails with EADDRINUSE (which is also what
+// --use-dynamic-base-id relies on to find a free base id). So only a socket file which nothing is
+// bound to anymore may be removed. On illumos connect() of an AF_UNIX datagram socket only resolves
+// the name, nothing is sent to the peer, and fails with EDESTADDRREQ for such a stale socket file
+// (ECONNREFUSED is accepted too, it can't mean anything else) or ENOENT if there is no file at all.
+bool domainSocketInUse(const sockaddr_un& address) {
+  const int probe = socket(AF_UNIX, SOCK_DGRAM, 0);
+  RELEASE_ASSERT(probe != -1, fmt::format("unable to create domain socket, errno={}", errno));
+  const int rc = connect(probe, reinterpret_cast<const sockaddr*>(&address), sizeof(address));
+  const int connect_errno = errno;
+  close(probe);
+  return rc == 0 || (connect_errno != EDESTADDRREQ && connect_errno != ECONNREFUSED &&
+                     connect_errno != ENOENT);
+}
+
+} // namespace
+#endif
+
 RpcStream::~RpcStream() {
   if (domain_socket_ != -1) {
     Api::OsSysCalls& os_sys_calls = Api::OsSysCallsSingleton::get();
@@ -36,6 +60,14 @@ sockaddr_un RpcStream::createDomainSocketAddress(uint64_t id, const std::string&
   // starts up it will kill the oldest parent.
   static constexpr uint64_t MaxConcurrentProcesses = 3;
   id = id % MaxConcurrentProcesses;
+#ifdef __sun
+  if (!socket_path.empty() && socket_path[0] == '@') {
+    throw EnvoyException(fmt::format("hot restart socket path '{}' is in the abstract namespace, "
+                                     "which illumos does not support. Use a file system path for "
+                                     "--socket-path (or --disable-hot-restart)",
+                                     socket_path));
+  }
+#endif
   sockaddr_un address;
   initDomainSocketAddress(&address);
   auto addr = THROW_OR_RETURN_VALUE(
@@ -55,7 +87,14 @@ void RpcStream::bindDomainSocket(uint64_t id, const std::string& role,
   // easily read single messages.
   domain_socket_ = socket(AF_UNIX, SOCK_DGRAM | SOCK_NONBLOCK, 0);
   sockaddr_un address = createDomainSocketAddress(id, role, socket_path, socket_mode);
+#ifdef __sun
+  // If the socket file is still in use it stays, and bind() fails with EADDRINUSE like on Linux.
+  if (!domainSocketInUse(address)) {
+    unlink(address.sun_path);
+  }
+#else
   unlink(address.sun_path);
+#endif
   Api::SysCallIntResult result =
       os_sys_calls.bind(domain_socket_, reinterpret_cast<sockaddr*>(&address), sizeof(address));
   if (result.return_value_ != 0) {
@@ -67,6 +106,16 @@ void RpcStream::bindDomainSocket(uint64_t id, const std::string& role,
     }
     throw EnvoyException(msg);
   }
+#ifdef __sun
+  // illumos ignores the fchmod() of the socket in createDomainSocketAddress() (sockfs discards
+  // mode changes of a socket), so set the permissions of the socket file instead. This is what
+  // Envoy also does for pipe listeners.
+  const Api::SysCallIntResult chmod_result = os_sys_calls.chmod(address.sun_path, socket_mode);
+  if (chmod_result.return_value_ != 0) {
+    throw EnvoyException(fmt::format("unable to set mode {:o} of domain socket {}, errno={}",
+                                     socket_mode, address.sun_path, chmod_result.errno_));
+  }
+#endif
 }
 
 bool RpcStream::sendHotRestartMessage(sockaddr_un& address, const HotRestartMessage& proto,
@@ -129,7 +178,13 @@ bool RpcStream::sendHotRestartMessage(sockaddr_un& address, const HotRestartMess
         break;
       }
 
-      if (saved_errno == ECONNREFUSED) {
+      if (saved_errno == ECONNREFUSED
+#ifdef __sun
+          // On illumos the address is a socket file (no abstract namespace). A datagram to a socket
+          // file nothing is bound to fails with EDESTADDRREQ, or ENOENT if there is no file.
+          || saved_errno == EDESTADDRREQ || saved_errno == ENOENT
+#endif
+      ) {
         if (allow_failure) {
           return false;
         }

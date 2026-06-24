@@ -1,0 +1,821 @@
+diff --git a/cargo/3rdparty/crates/BUILD.autocfg-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.autocfg-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.autocfg-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.autocfg-1.5.0.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.cargo-util-schemas-0.3.1.bazel b/cargo/3rdparty/crates/BUILD.cargo-util-schemas-0.3.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.cargo-util-schemas-0.3.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.cargo-util-schemas-0.3.1.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.3.1",
+diff --git a/cargo/3rdparty/crates/BUILD.cargo_toml-0.22.3.bazel b/cargo/3rdparty/crates/BUILD.cargo_toml-0.22.3.bazel
+--- a/cargo/3rdparty/crates/BUILD.cargo_toml-0.22.3.bazel
++++ b/cargo/3rdparty/crates/BUILD.cargo_toml-0.22.3.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.22.3",
+diff --git a/cargo/3rdparty/crates/BUILD.displaydoc-0.2.5.bazel b/cargo/3rdparty/crates/BUILD.displaydoc-0.2.5.bazel
+--- a/cargo/3rdparty/crates/BUILD.displaydoc-0.2.5.bazel
++++ b/cargo/3rdparty/crates/BUILD.displaydoc-0.2.5.bazel
+@@ -95,6 +95,7 @@ rust_proc_macro(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.2.5",
+diff --git a/cargo/3rdparty/crates/BUILD.equivalent-1.0.1.bazel b/cargo/3rdparty/crates/BUILD.equivalent-1.0.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.equivalent-1.0.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.equivalent-1.0.1.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.1",
+diff --git a/cargo/3rdparty/crates/BUILD.erased-serde-0.4.5.bazel b/cargo/3rdparty/crates/BUILD.erased-serde-0.4.5.bazel
+--- a/cargo/3rdparty/crates/BUILD.erased-serde-0.4.5.bazel
++++ b/cargo/3rdparty/crates/BUILD.erased-serde-0.4.5.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.4.5",
+diff --git a/cargo/3rdparty/crates/BUILD.form_urlencoded-1.2.1.bazel b/cargo/3rdparty/crates/BUILD.form_urlencoded-1.2.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.form_urlencoded-1.2.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.form_urlencoded-1.2.1.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.2.1",
+diff --git a/cargo/3rdparty/crates/BUILD.hashbrown-0.16.1.bazel b/cargo/3rdparty/crates/BUILD.hashbrown-0.16.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.hashbrown-0.16.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.hashbrown-0.16.1.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.16.1",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_collections-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_collections-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_collections-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_collections-1.5.0.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_locid-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_locid-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_locid-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_locid-1.5.0.bazel
+@@ -101,6 +101,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_locid_transform-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_locid_transform-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_locid_transform-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_locid_transform-1.5.0.bazel
+@@ -101,6 +101,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_locid_transform_data-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_locid_transform_data-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_locid_transform_data-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_locid_transform_data-1.5.0.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_normalizer-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_normalizer-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_normalizer-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_normalizer-1.5.0.bazel
+@@ -102,6 +102,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_normalizer_data-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_normalizer_data-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_normalizer_data-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_normalizer_data-1.5.0.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_properties-1.5.1.bazel b/cargo/3rdparty/crates/BUILD.icu_properties-1.5.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_properties-1.5.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_properties-1.5.1.bazel
+@@ -102,6 +102,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.1",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_properties_data-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_properties_data-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_properties_data-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_properties_data-1.5.0.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_provider-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_provider-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_provider-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_provider-1.5.0.bazel
+@@ -102,6 +102,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.icu_provider_macros-1.5.0.bazel b/cargo/3rdparty/crates/BUILD.icu_provider_macros-1.5.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.icu_provider_macros-1.5.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.icu_provider_macros-1.5.0.bazel
+@@ -95,6 +95,7 @@ rust_proc_macro(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.5.0",
+diff --git a/cargo/3rdparty/crates/BUILD.idna-1.0.3.bazel b/cargo/3rdparty/crates/BUILD.idna-1.0.3.bazel
+--- a/cargo/3rdparty/crates/BUILD.idna-1.0.3.bazel
++++ b/cargo/3rdparty/crates/BUILD.idna-1.0.3.bazel
+@@ -100,6 +100,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.3",
+diff --git a/cargo/3rdparty/crates/BUILD.idna_adapter-1.2.0.bazel b/cargo/3rdparty/crates/BUILD.idna_adapter-1.2.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.idna_adapter-1.2.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.idna_adapter-1.2.0.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.2.0",
+diff --git a/cargo/3rdparty/crates/BUILD.indexmap-2.13.0.bazel b/cargo/3rdparty/crates/BUILD.indexmap-2.13.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.indexmap-2.13.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.indexmap-2.13.0.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "2.13.0",
+diff --git a/cargo/3rdparty/crates/BUILD.litemap-0.7.4.bazel b/cargo/3rdparty/crates/BUILD.litemap-0.7.4.bazel
+--- a/cargo/3rdparty/crates/BUILD.litemap-0.7.4.bazel
++++ b/cargo/3rdparty/crates/BUILD.litemap-0.7.4.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.7.4",
+diff --git a/cargo/3rdparty/crates/BUILD.memchr-2.7.4.bazel b/cargo/3rdparty/crates/BUILD.memchr-2.7.4.bazel
+--- a/cargo/3rdparty/crates/BUILD.memchr-2.7.4.bazel
++++ b/cargo/3rdparty/crates/BUILD.memchr-2.7.4.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "2.7.4",
+diff --git a/cargo/3rdparty/crates/BUILD.num-traits-0.2.19.bazel b/cargo/3rdparty/crates/BUILD.num-traits-0.2.19.bazel
+--- a/cargo/3rdparty/crates/BUILD.num-traits-0.2.19.bazel
++++ b/cargo/3rdparty/crates/BUILD.num-traits-0.2.19.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.2.19",
+diff --git a/cargo/3rdparty/crates/BUILD.ordered-float-2.10.1.bazel b/cargo/3rdparty/crates/BUILD.ordered-float-2.10.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.ordered-float-2.10.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.ordered-float-2.10.1.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "2.10.1",
+diff --git a/cargo/3rdparty/crates/BUILD.pathdiff-0.1.0.bazel b/cargo/3rdparty/crates/BUILD.pathdiff-0.1.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.pathdiff-0.1.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.pathdiff-0.1.0.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.1.0",
+diff --git a/cargo/3rdparty/crates/BUILD.percent-encoding-2.3.1.bazel b/cargo/3rdparty/crates/BUILD.percent-encoding-2.3.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.percent-encoding-2.3.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.percent-encoding-2.3.1.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "2.3.1",
+diff --git a/cargo/3rdparty/crates/BUILD.proc-macro2-1.0.93.bazel b/cargo/3rdparty/crates/BUILD.proc-macro2-1.0.93.bazel
+--- a/cargo/3rdparty/crates/BUILD.proc-macro2-1.0.93.bazel
++++ b/cargo/3rdparty/crates/BUILD.proc-macro2-1.0.93.bazel
+@@ -100,6 +100,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.93",
+diff --git a/cargo/3rdparty/crates/BUILD.quote-1.0.38.bazel b/cargo/3rdparty/crates/BUILD.quote-1.0.38.bazel
+--- a/cargo/3rdparty/crates/BUILD.quote-1.0.38.bazel
++++ b/cargo/3rdparty/crates/BUILD.quote-1.0.38.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.38",
+diff --git a/cargo/3rdparty/crates/BUILD.semver-1.0.25.bazel b/cargo/3rdparty/crates/BUILD.semver-1.0.25.bazel
+--- a/cargo/3rdparty/crates/BUILD.semver-1.0.25.bazel
++++ b/cargo/3rdparty/crates/BUILD.semver-1.0.25.bazel
+@@ -101,6 +101,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.25",
+diff --git a/cargo/3rdparty/crates/BUILD.serde-1.0.228.bazel b/cargo/3rdparty/crates/BUILD.serde-1.0.228.bazel
+--- a/cargo/3rdparty/crates/BUILD.serde-1.0.228.bazel
++++ b/cargo/3rdparty/crates/BUILD.serde-1.0.228.bazel
+@@ -106,6 +106,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.228",
+diff --git a/cargo/3rdparty/crates/BUILD.serde-untagged-0.1.6.bazel b/cargo/3rdparty/crates/BUILD.serde-untagged-0.1.6.bazel
+--- a/cargo/3rdparty/crates/BUILD.serde-untagged-0.1.6.bazel
++++ b/cargo/3rdparty/crates/BUILD.serde-untagged-0.1.6.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.1.6",
+diff --git a/cargo/3rdparty/crates/BUILD.serde-value-0.7.0.bazel b/cargo/3rdparty/crates/BUILD.serde-value-0.7.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.serde-value-0.7.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.serde-value-0.7.0.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.7.0",
+diff --git a/cargo/3rdparty/crates/BUILD.serde_core-1.0.228.bazel b/cargo/3rdparty/crates/BUILD.serde_core-1.0.228.bazel
+--- a/cargo/3rdparty/crates/BUILD.serde_core-1.0.228.bazel
++++ b/cargo/3rdparty/crates/BUILD.serde_core-1.0.228.bazel
+@@ -101,6 +101,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.228",
+diff --git a/cargo/3rdparty/crates/BUILD.serde_derive-1.0.228.bazel b/cargo/3rdparty/crates/BUILD.serde_derive-1.0.228.bazel
+--- a/cargo/3rdparty/crates/BUILD.serde_derive-1.0.228.bazel
++++ b/cargo/3rdparty/crates/BUILD.serde_derive-1.0.228.bazel
+@@ -98,6 +98,7 @@ rust_proc_macro(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.228",
+diff --git a/cargo/3rdparty/crates/BUILD.serde_spanned-0.6.8.bazel b/cargo/3rdparty/crates/BUILD.serde_spanned-0.6.8.bazel
+--- a/cargo/3rdparty/crates/BUILD.serde_spanned-0.6.8.bazel
++++ b/cargo/3rdparty/crates/BUILD.serde_spanned-0.6.8.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.6.8",
+diff --git a/cargo/3rdparty/crates/BUILD.serde_spanned-1.1.1.bazel b/cargo/3rdparty/crates/BUILD.serde_spanned-1.1.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.serde_spanned-1.1.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.serde_spanned-1.1.1.bazel
+@@ -100,6 +100,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.1.1",
+diff --git a/cargo/3rdparty/crates/BUILD.smallvec-1.13.2.bazel b/cargo/3rdparty/crates/BUILD.smallvec-1.13.2.bazel
+--- a/cargo/3rdparty/crates/BUILD.smallvec-1.13.2.bazel
++++ b/cargo/3rdparty/crates/BUILD.smallvec-1.13.2.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.13.2",
+diff --git a/cargo/3rdparty/crates/BUILD.stable_deref_trait-1.2.0.bazel b/cargo/3rdparty/crates/BUILD.stable_deref_trait-1.2.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.stable_deref_trait-1.2.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.stable_deref_trait-1.2.0.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.2.0",
+diff --git a/cargo/3rdparty/crates/BUILD.syn-2.0.98.bazel b/cargo/3rdparty/crates/BUILD.syn-2.0.98.bazel
+--- a/cargo/3rdparty/crates/BUILD.syn-2.0.98.bazel
++++ b/cargo/3rdparty/crates/BUILD.syn-2.0.98.bazel
+@@ -106,6 +106,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "2.0.98",
+diff --git a/cargo/3rdparty/crates/BUILD.synstructure-0.13.1.bazel b/cargo/3rdparty/crates/BUILD.synstructure-0.13.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.synstructure-0.13.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.synstructure-0.13.1.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.13.1",
+diff --git a/cargo/3rdparty/crates/BUILD.thiserror-1.0.69.bazel b/cargo/3rdparty/crates/BUILD.thiserror-1.0.69.bazel
+--- a/cargo/3rdparty/crates/BUILD.thiserror-1.0.69.bazel
++++ b/cargo/3rdparty/crates/BUILD.thiserror-1.0.69.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.69",
+diff --git a/cargo/3rdparty/crates/BUILD.thiserror-impl-1.0.69.bazel b/cargo/3rdparty/crates/BUILD.thiserror-impl-1.0.69.bazel
+--- a/cargo/3rdparty/crates/BUILD.thiserror-impl-1.0.69.bazel
++++ b/cargo/3rdparty/crates/BUILD.thiserror-impl-1.0.69.bazel
+@@ -95,6 +95,7 @@ rust_proc_macro(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.69",
+diff --git a/cargo/3rdparty/crates/BUILD.tinystr-0.7.6.bazel b/cargo/3rdparty/crates/BUILD.tinystr-0.7.6.bazel
+--- a/cargo/3rdparty/crates/BUILD.tinystr-0.7.6.bazel
++++ b/cargo/3rdparty/crates/BUILD.tinystr-0.7.6.bazel
+@@ -102,6 +102,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.7.6",
+diff --git a/cargo/3rdparty/crates/BUILD.toml-0.8.20.bazel b/cargo/3rdparty/crates/BUILD.toml-0.8.20.bazel
+--- a/cargo/3rdparty/crates/BUILD.toml-0.8.20.bazel
++++ b/cargo/3rdparty/crates/BUILD.toml-0.8.20.bazel
+@@ -100,6 +100,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.8.20",
+diff --git a/cargo/3rdparty/crates/BUILD.toml-0.9.12+spec-1.1.0.bazel b/cargo/3rdparty/crates/BUILD.toml-0.9.12+spec-1.1.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.toml-0.9.12+spec-1.1.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.toml-0.9.12+spec-1.1.0.bazel
+@@ -102,6 +102,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.9.12+spec-1.1.0",
+diff --git a/cargo/3rdparty/crates/BUILD.toml_datetime-0.6.8.bazel b/cargo/3rdparty/crates/BUILD.toml_datetime-0.6.8.bazel
+--- a/cargo/3rdparty/crates/BUILD.toml_datetime-0.6.8.bazel
++++ b/cargo/3rdparty/crates/BUILD.toml_datetime-0.6.8.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.6.8",
+diff --git a/cargo/3rdparty/crates/BUILD.toml_datetime-0.7.5+spec-1.1.0.bazel b/cargo/3rdparty/crates/BUILD.toml_datetime-0.7.5+spec-1.1.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.toml_datetime-0.7.5+spec-1.1.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.toml_datetime-0.7.5+spec-1.1.0.bazel
+@@ -100,6 +100,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.7.5+spec-1.1.0",
+diff --git a/cargo/3rdparty/crates/BUILD.toml_edit-0.22.24.bazel b/cargo/3rdparty/crates/BUILD.toml_edit-0.22.24.bazel
+--- a/cargo/3rdparty/crates/BUILD.toml_edit-0.22.24.bazel
++++ b/cargo/3rdparty/crates/BUILD.toml_edit-0.22.24.bazel
+@@ -100,6 +100,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.22.24",
+diff --git a/cargo/3rdparty/crates/BUILD.toml_parser-1.1.1+spec-1.1.0.bazel b/cargo/3rdparty/crates/BUILD.toml_parser-1.1.1+spec-1.1.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.toml_parser-1.1.1+spec-1.1.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.toml_parser-1.1.1+spec-1.1.0.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.1.1+spec-1.1.0",
+diff --git a/cargo/3rdparty/crates/BUILD.toml_writer-1.1.1+spec-1.1.0.bazel b/cargo/3rdparty/crates/BUILD.toml_writer-1.1.1+spec-1.1.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.toml_writer-1.1.1+spec-1.1.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.toml_writer-1.1.1+spec-1.1.0.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.1.1+spec-1.1.0",
+diff --git a/cargo/3rdparty/crates/BUILD.typeid-1.0.2.bazel b/cargo/3rdparty/crates/BUILD.typeid-1.0.2.bazel
+--- a/cargo/3rdparty/crates/BUILD.typeid-1.0.2.bazel
++++ b/cargo/3rdparty/crates/BUILD.typeid-1.0.2.bazel
+@@ -96,6 +96,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.2",
+diff --git a/cargo/3rdparty/crates/BUILD.unicode-ident-1.0.16.bazel b/cargo/3rdparty/crates/BUILD.unicode-ident-1.0.16.bazel
+--- a/cargo/3rdparty/crates/BUILD.unicode-ident-1.0.16.bazel
++++ b/cargo/3rdparty/crates/BUILD.unicode-ident-1.0.16.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.16",
+diff --git a/cargo/3rdparty/crates/BUILD.unicode-xid-0.2.6.bazel b/cargo/3rdparty/crates/BUILD.unicode-xid-0.2.6.bazel
+--- a/cargo/3rdparty/crates/BUILD.unicode-xid-0.2.6.bazel
++++ b/cargo/3rdparty/crates/BUILD.unicode-xid-0.2.6.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.2.6",
+diff --git a/cargo/3rdparty/crates/BUILD.url-2.5.4.bazel b/cargo/3rdparty/crates/BUILD.url-2.5.4.bazel
+--- a/cargo/3rdparty/crates/BUILD.url-2.5.4.bazel
++++ b/cargo/3rdparty/crates/BUILD.url-2.5.4.bazel
+@@ -99,6 +99,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "2.5.4",
+diff --git a/cargo/3rdparty/crates/BUILD.utf16_iter-1.0.5.bazel b/cargo/3rdparty/crates/BUILD.utf16_iter-1.0.5.bazel
+--- a/cargo/3rdparty/crates/BUILD.utf16_iter-1.0.5.bazel
++++ b/cargo/3rdparty/crates/BUILD.utf16_iter-1.0.5.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.5",
+diff --git a/cargo/3rdparty/crates/BUILD.utf8_iter-1.0.4.bazel b/cargo/3rdparty/crates/BUILD.utf8_iter-1.0.4.bazel
+--- a/cargo/3rdparty/crates/BUILD.utf8_iter-1.0.4.bazel
++++ b/cargo/3rdparty/crates/BUILD.utf8_iter-1.0.4.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.4",
+diff --git a/cargo/3rdparty/crates/BUILD.winnow-0.7.15.bazel b/cargo/3rdparty/crates/BUILD.winnow-0.7.15.bazel
+--- a/cargo/3rdparty/crates/BUILD.winnow-0.7.15.bazel
++++ b/cargo/3rdparty/crates/BUILD.winnow-0.7.15.bazel
+@@ -100,6 +100,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.7.15",
+diff --git a/cargo/3rdparty/crates/BUILD.winnow-1.0.1.bazel b/cargo/3rdparty/crates/BUILD.winnow-1.0.1.bazel
+--- a/cargo/3rdparty/crates/BUILD.winnow-1.0.1.bazel
++++ b/cargo/3rdparty/crates/BUILD.winnow-1.0.1.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.1",
+diff --git a/cargo/3rdparty/crates/BUILD.write16-1.0.0.bazel b/cargo/3rdparty/crates/BUILD.write16-1.0.0.bazel
+--- a/cargo/3rdparty/crates/BUILD.write16-1.0.0.bazel
++++ b/cargo/3rdparty/crates/BUILD.write16-1.0.0.bazel
+@@ -98,6 +98,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "1.0.0",
+diff --git a/cargo/3rdparty/crates/BUILD.writeable-0.5.5.bazel b/cargo/3rdparty/crates/BUILD.writeable-0.5.5.bazel
+--- a/cargo/3rdparty/crates/BUILD.writeable-0.5.5.bazel
++++ b/cargo/3rdparty/crates/BUILD.writeable-0.5.5.bazel
+@@ -95,6 +95,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.5.5",
+diff --git a/cargo/3rdparty/crates/BUILD.yoke-0.7.5.bazel b/cargo/3rdparty/crates/BUILD.yoke-0.7.5.bazel
+--- a/cargo/3rdparty/crates/BUILD.yoke-0.7.5.bazel
++++ b/cargo/3rdparty/crates/BUILD.yoke-0.7.5.bazel
+@@ -104,6 +104,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.7.5",
+diff --git a/cargo/3rdparty/crates/BUILD.yoke-derive-0.7.5.bazel b/cargo/3rdparty/crates/BUILD.yoke-derive-0.7.5.bazel
+--- a/cargo/3rdparty/crates/BUILD.yoke-derive-0.7.5.bazel
++++ b/cargo/3rdparty/crates/BUILD.yoke-derive-0.7.5.bazel
+@@ -95,6 +95,7 @@ rust_proc_macro(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.7.5",
+diff --git a/cargo/3rdparty/crates/BUILD.zerofrom-0.1.5.bazel b/cargo/3rdparty/crates/BUILD.zerofrom-0.1.5.bazel
+--- a/cargo/3rdparty/crates/BUILD.zerofrom-0.1.5.bazel
++++ b/cargo/3rdparty/crates/BUILD.zerofrom-0.1.5.bazel
+@@ -102,6 +102,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.1.5",
+diff --git a/cargo/3rdparty/crates/BUILD.zerofrom-derive-0.1.5.bazel b/cargo/3rdparty/crates/BUILD.zerofrom-derive-0.1.5.bazel
+--- a/cargo/3rdparty/crates/BUILD.zerofrom-derive-0.1.5.bazel
++++ b/cargo/3rdparty/crates/BUILD.zerofrom-derive-0.1.5.bazel
+@@ -95,6 +95,7 @@ rust_proc_macro(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.1.5",
+diff --git a/cargo/3rdparty/crates/BUILD.zerovec-0.10.4.bazel b/cargo/3rdparty/crates/BUILD.zerovec-0.10.4.bazel
+--- a/cargo/3rdparty/crates/BUILD.zerovec-0.10.4.bazel
++++ b/cargo/3rdparty/crates/BUILD.zerovec-0.10.4.bazel
+@@ -102,6 +102,7 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.10.4",
+diff --git a/cargo/3rdparty/crates/BUILD.zerovec-derive-0.10.3.bazel b/cargo/3rdparty/crates/BUILD.zerovec-derive-0.10.3.bazel
+--- a/cargo/3rdparty/crates/BUILD.zerovec-derive-0.10.3.bazel
++++ b/cargo/3rdparty/crates/BUILD.zerovec-derive-0.10.3.bazel
+@@ -95,6 +95,7 @@ rust_proc_macro(
+         "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu": [],
+         "@rules_rust//rust/platform:x86_64-unknown-none": [],
+         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
++        "@rules_rust//rust/platform:x86_64-unknown-illumos": [],
+         "//conditions:default": ["@platforms//:incompatible"],
+     }),
+     version = "0.10.3",
+diff --git a/crate_universe/extensions.bzl b/crate_universe/extensions.bzl
+--- a/crate_universe/extensions.bzl
++++ b/crate_universe/extensions.bzl
+@@ -832,7 +832,10 @@ def _get_generator(module_ctx, host_triple):
+     if use_environ:
+         generator_sha256 = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_SHA256)
+         generator_url = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_URL)
+-    elif len(CARGO_BAZEL_URLS) == 0:
++    elif len(CARGO_BAZEL_URLS) == 0 or host_triple.str not in CARGO_BAZEL_URLS:
++        # No prebuilt `cargo-bazel` exists for this host (eg. x86_64-unknown-illumos), so build it
++        # from source with the host Rust toolchain, like the rules_rust development workflow does.
++        #
+         # For Bazel 7 and below, `module_ctx.path` will also watch files so to avoid
+         # volatility in lock files caused by referencing host specific files, direct
+         # references are avoided.
+diff --git a/rust/platform/triple.bzl b/rust/platform/triple.bzl
+--- a/rust/platform/triple.bzl
++++ b/rust/platform/triple.bzl
+@@ -140,6 +140,7 @@ def get_host_triple(repository_ctx, abi = {}):
+         "linux": ["aarch64", "x86_64", "s390x", "powerpc64le", "riscv64"],
+         "macos": ["aarch64", "x86_64"],
+         "windows": ["aarch64", "x86_64"],
++        "illumos": ["x86_64"],
+     }
+ 
+     arch = repository_ctx.os.arch
+@@ -152,6 +153,14 @@ def get_host_triple(repository_ctx, abi = {}):
+     if arch == "riscv64":
+         arch = "riscv64gc"
+ 
++    os_name = repository_ctx.os.name.lower()
++
++    # illumos (and SmartOS) report `repository_ctx.os.name` as "sunos". Solaris
++    # is accepted as well since both share the `*-unknown-illumos` Rust target.
++    if "illumos" in os_name or "sunos" in os_name or "solaris" in os_name:
++        _validate_cpu_architecture(arch, supported_architectures["illumos"])
++        return triple("{}-unknown-illumos".format(arch))
++
+     if "linux" in repository_ctx.os.name:
+         _validate_cpu_architecture(arch, supported_architectures["linux"])
+         prefix = "{}-unknown-linux".format(arch)
+diff --git a/rust/platform/triple_mappings.bzl b/rust/platform/triple_mappings.bzl
+--- a/rust/platform/triple_mappings.bzl
++++ b/rust/platform/triple_mappings.bzl
+@@ -80,6 +80,7 @@ SUPPORTED_T2_PLATFORM_TRIPLES = {
+     "x86_64-linux-android": _support(std = True, host_tools = False),
+     "x86_64-unknown-freebsd": _support(std = True, host_tools = True),
+     "x86_64-unknown-fuchsia": _support(std = True, host_tools = False),
++    "x86_64-unknown-illumos": _support(std = True, host_tools = True),
+     "x86_64-unknown-none": _support(std = True, host_tools = False),
+     "x86_64-unknown-uefi": _support(std = True, host_tools = False),
+ }
+@@ -170,6 +171,7 @@ _SYSTEM_TO_BUILTIN_SYS_SUFFIX = {
+     "emscripten": "emscripten",
+     "freebsd": "freebsd",
+     "fuchsia": "fuchsia",
++    "illumos": "illumos",
+     "ios": "ios",
+     "linux": "linux",
+     "macos": "osx",
+@@ -196,6 +198,7 @@ _SYSTEM_TO_BINARY_EXT = {
+     "emscripten": ".js",
+     "freebsd": "",
+     "fuchsia": "",
++    "illumos": "",
+     "ios": "",
+     "linux": "",
+     "macos": "",
+@@ -223,6 +226,7 @@ _SYSTEM_TO_STATICLIB_EXT = {
+     "emscripten": ".js",
+     "freebsd": ".a",
+     "fuchsia": ".a",
++    "illumos": ".a",
+     "ios": ".a",
+     "linux": ".a",
+     "macos": ".a",
+@@ -247,6 +251,7 @@ _SYSTEM_TO_DYLIB_EXT = {
+     "emscripten": ".js",
+     "freebsd": ".so",
+     "fuchsia": ".so",
++    "illumos": ".so",
+     "ios": ".dylib",
+     "linux": ".so",
+     "macos": ".dylib",

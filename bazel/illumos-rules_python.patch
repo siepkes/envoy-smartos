@@ -1,0 +1,72 @@
+diff --git a/python/private/python.bzl b/python/private/python.bzl
+--- a/python/private/python.bzl
++++ b/python/private/python.bzl
+@@ -30,6 +30,7 @@ load(
+     "multi_toolchain_aliases",
+     "sorted_host_platform_names",
+     "sorted_host_platforms",
++    "system_python_host_repo",
+ )
+ load(":version.bzl", "version")
+ 
+@@ -352,6 +353,16 @@ def _python_impl(module_ctx):
+         choices = []
+         if info.compatible_version not in all_host_compatible_impls:
+             logger.warn("No host compatible runtime found compatible with version {}".format(info.compatible_version))
++
++            # Hosts without any hermetic runtime (eg. illumos / SmartOS): back the host repo
++            # with the system interpreter instead, so that the `use_repo(python, "..._host")`
++            # of modules depending on it (eg. emsdk) keeps resolving.
++            all_host_compatible_repo_names.append(host_repo_name)
++            system_python_host_repo(
++                name = host_repo_name,
++                base_name = host_repo_name,
++                python_version = info.full_python_version,
++            )
+             continue
+ 
+         choices = all_host_compatible_impls[info.compatible_version]
+diff --git a/python/private/toolchains_repo.bzl b/python/private/toolchains_repo.bzl
+--- a/python/private/toolchains_repo.bzl
++++ b/python/private/toolchains_repo.bzl
+@@ -456,6 +456,40 @@ Major.Minor.Micro format. Keyed by index in `platforms`.
+     },
+ )
+ 
++def _system_python_host_repo_impl(rctx):
++    rctx.file("BUILD.bazel", _HOST_TOOLCHAIN_BUILD_CONTENT)
++    python = None
++    for name in ["python3", "python"]:
++        python = rctx.which(name)
++        if python:
++            break
++    if not python:
++        fail((
++            "No hermetic Python runtime is available for this host and no `python3` (or " +
++            "`python`) was found on PATH to use instead for the `{}` repository."
++        ).format(rctx.attr.base_name))
++    rctx.symlink(python, "python")
++
++system_python_host_repo = repository_rule(
++    implementation = _system_python_host_repo_impl,
++    doc = """\
++Stand-in for `host_compatible_python_repo` on hosts for which no hermetic runtime exists (for
++example illumos / SmartOS): exposes the interpreter found on PATH as `python`, so that the
++`python_<version>_host` repositories that bzlmod users import with `use_repo()` still exist.
++""",
++    attrs = {
++        "base_name": attr.string(
++            doc = "The name arg, but without bzlmod canonicalization applied.",
++        ),
++        "python_version": attr.string(
++            doc = "The Python version the hermetic runtime would have had, for diagnostics.",
++        ),
++        "_rule_name": attr.string(default = "system_python_host_repo"),
++        "_rules_python_workspace": attr.label(default = Label("//:WORKSPACE")),
++    },
++    environ = ["PATH"],
++)
++
+ def _multi_toolchain_aliases_impl(rctx):
+     rules_python = rctx.attr._rules_python_workspace.repo_name
+ 

@@ -1,5 +1,7 @@
 #include "source/server/hot_restarting_parent.h"
 
+#include <csignal>
+
 #include "envoy/server/instance.h"
 #include "envoy/stats/stats.h"
 
